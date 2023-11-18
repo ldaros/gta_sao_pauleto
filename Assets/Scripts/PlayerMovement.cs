@@ -6,6 +6,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float movementSpeed = 7f;
     [SerializeField] private float sprintSpeed = 10f;
     [SerializeField] private float groundDrag = 5f;
+    [SerializeField] private Transform orientation;
+    [SerializeField] private AnimatorHandler animatorHandler;
+    [SerializeField] private GameObject rootBone;
+    [SerializeField] private ThirdPersonCamera thirdPersonCamera;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 12f;
@@ -20,24 +24,31 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
-    [SerializeField] private Transform orientation;
-
-    [SerializeField] private AnimatorHandler animatorHandler;
+    [Header("Footsteps")]
+    [SerializeField] private AudioClip[] footstepSounds;
+    [SerializeField] private float stepRate = 0.5f;
+    [SerializeField] private float sprintStepRate = 0.3f;
+    private float stepTimer = 0;
+    private int stepCounter = 0;
 
     private float _horizontalInput;
     private float _verticalInput;
     private float _airTime = 0f;
     private Vector3 _movementDirection;
     private Rigidbody _rigidBody;
+    private AudioSource _audioSource;
 
+    public bool IsDead { get; set; } = false;
     public bool IsGrounded { get; private set; }
     public bool IsSprinting { get; private set; }
+    public bool IsRagdoll { get; private set; } = false;
     public bool CanJump { get; private set; } = true;
     public float MoveAmount { get; private set; }
 
+
     private void Start()
     {
-        InitializeRigidBody();
+        InitializeComponents();
     }
 
     private void Update()
@@ -49,6 +60,7 @@ public class PlayerMovement : MonoBehaviour
         LimitHorizontalVelocity();
         ApplyGroundDrag();
         UpdateAnimator(delta);
+        HandleSteps(delta);
     }
 
     private void FixedUpdate()
@@ -56,10 +68,14 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
-    private void InitializeRigidBody()
+    private void InitializeComponents()
     {
         _rigidBody = GetComponent<Rigidbody>();
         _rigidBody.freezeRotation = true;
+
+        _audioSource = GetComponent<AudioSource>();
+
+        ConfigureRagdoll(false);
     }
 
     private void CheckGroundStatus(float delta)
@@ -92,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleJump()
     {
+        if (IsDead) return;
+
         if (Input.GetKey(jumpKey) && CanJump && IsGrounded)
         {
             CanJump = false;
@@ -102,6 +120,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleSprint()
     {
+        if (IsDead) return;
+
+
         if (Input.GetKeyDown(sprintKey) && IsGrounded)
         {
             IsSprinting = true;
@@ -121,6 +142,28 @@ public class PlayerMovement : MonoBehaviour
     {
         _movementDirection = orientation.forward * _verticalInput + orientation.right * _horizontalInput;
         _rigidBody.AddForce(CalculateMovementForce(), ForceMode.Force);
+    }
+
+    private void HandleSteps(float delta)
+    {
+        if (IsMoving() && IsGrounded)
+        {
+            stepTimer += delta;
+
+            float rate = IsSprinting ? sprintStepRate : stepRate;
+
+            if (stepTimer >= rate)
+            {
+                PlayFootstepSound();
+                stepTimer = 0;
+            }
+        }
+    }
+
+    private bool IsMoving()
+    {
+        if (IsRagdoll) return false;
+        return (Mathf.Abs(_horizontalInput) > 0.1f || Mathf.Abs(_verticalInput) > 0.1f);
     }
 
     private Vector3 CalculateMovementForce()
@@ -170,6 +213,49 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateAnimator(float delta)
     {
         animatorHandler.UpdateAnimatorValues(MoveAmount, 0, IsSprinting, delta);
+    }
+
+    private void PlayFootstepSound()
+    {
+        if (footstepSounds.Length > 0)
+        {
+            if (stepCounter >= footstepSounds.Length)
+            {
+                stepCounter = 0;
+            }
+
+            AudioClip footstep = footstepSounds[stepCounter];
+
+            // Play the selected sound
+            _audioSource.PlayOneShot(footstep);
+
+            stepCounter++;
+        }
+    }
+    public void ToggleRagdoll()
+    {
+        IsRagdoll = !IsRagdoll;
+        ConfigureRagdoll(IsRagdoll);
+    }
+
+    private void ConfigureRagdoll(bool enable)
+    {
+        Rigidbody[] rigidBodies = rootBone.GetComponentsInChildren<Rigidbody>();
+        Collider[] colliders = rootBone.GetComponentsInChildren<Collider>();
+
+        foreach (Rigidbody rb in rigidBodies)
+        {
+            rb.isKinematic = !enable;
+        }
+        foreach (Collider col in colliders)
+        {
+            col.enabled = enable;
+        }
+
+        _rigidBody.isKinematic = enable;
+        _rigidBody.useGravity = !enable;
+        thirdPersonCamera.lockRotation = enable;
+        animatorHandler.animator.enabled = !enable;
     }
 
     private void OnDrawGizmosSelected()

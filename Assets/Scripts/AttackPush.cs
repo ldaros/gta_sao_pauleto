@@ -6,6 +6,7 @@ public class AttackPush : MonoBehaviour
     [Header("Attack Settings")]
     [SerializeField] private BoxCollider _collider;
     [SerializeField] private float pushForce = 10f;
+    [SerializeField] private float pushForceUp = 5f;
     [SerializeField] private float cooldown = 1f;
     [SerializeField] private float ragdollDuration = 5f;
 
@@ -14,6 +15,8 @@ public class AttackPush : MonoBehaviour
 
     [Header("Sound")]
     [SerializeField] private AudioClip attackSound;
+
+    [SerializeField] private AnimatorHandler animatorHandler;
 
     private AudioSource _audioSource;
     private Coroutine _attackCooldownCoroutine;
@@ -36,6 +39,7 @@ public class AttackPush : MonoBehaviour
 
     private void PerformAttack()
     {
+        animatorHandler.PlayTargetAnimation("Kick", true);
         Collider[] colliders = Physics.OverlapBox(_collider.bounds.center,
             _collider.bounds.extents, _collider.transform.rotation, LayerMask.GetMask("Enemy"));
 
@@ -52,13 +56,13 @@ public class AttackPush : MonoBehaviour
                 _audioSource.PlayOneShot(attackSound);
             }
         }
-
     }
 
     private void ApplyForceToEnemy(Rigidbody enemyRigidbody)
     {
         Vector3 direction = (enemyRigidbody.transform.position - transform.position).normalized;
-        enemyRigidbody.AddForce(direction * pushForce * 10f, ForceMode.Impulse);
+        Vector3 upwardForce = Vector3.up * pushForceUp;
+        enemyRigidbody.AddForce((direction + upwardForce) * pushForce * 10f, ForceMode.Impulse);
     }
 
     private void StartCooldown()

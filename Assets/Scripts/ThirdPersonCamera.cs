@@ -10,6 +10,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     [Header("Settings")]
     public float rotationSpeed;
+    public bool lockRotation = false;
 
     private void Start()
     {
@@ -41,6 +42,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private void RotatePlayerObject()
     {
+        if (lockRotation) return;
+
         Vector3 inputDirection = GetInputDirection();
 
         if (inputDirection != Vector3.zero)
