@@ -1,43 +1,47 @@
 using UnityEngine;
 
-
 public class AnimatorHandler : MonoBehaviour
 {
-    public float AnimationTransitionDuration = 0.2f;
-    public float AnimationDampTime = 0.1f;
+    [SerializeField] private Animator AnimatorRef;
 
-    // Public variables
-    public Animator animator;
-    public bool canRotate;
+    [Header("Settings")]
+    [SerializeField] private float animationTransitionDuration = 0.2f;
+    [SerializeField] private float animationDampTime = 0.1f;
 
-    // Private variables
-    private int _verticalHash;
-    private int _horizontalHash;
+    public bool CanRotate { get; private set; }
+    public Animator Animator { get; private set; }
+
+    private static readonly int VerticalHash = Animator.StringToHash("Vertical");
+    private static readonly int HorizontalHash = Animator.StringToHash("Horizontal");
+    private static readonly int IsInteractingHash = Animator.StringToHash("isInteracting");
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        _verticalHash = Animator.StringToHash("Vertical");
-        _horizontalHash = Animator.StringToHash("Horizontal");
+        Animator = AnimatorRef ? AnimatorRef : GetComponent<Animator>();
     }
 
     public void PlayTargetAnimation(string animation, bool isInteracting)
     {
-        animator.SetBool("isInteracting", isInteracting);
-        animator.CrossFade(animation, AnimationTransitionDuration);
+        Animator.SetBool(IsInteractingHash, isInteracting);
+        Animator.CrossFade(animation, animationTransitionDuration);
     }
 
     public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting, float delta)
     {
-        bool isMoving = verticalMovement != 0 || horizontalMovement != 0;
-
-        if (isSprinting && isMoving) { verticalMovement = 2; }
-
-        animator.SetFloat(_verticalHash, verticalMovement, AnimationDampTime, delta);
-        animator.SetFloat(_horizontalHash, horizontalMovement, AnimationDampTime, delta);
+        float adjustedVerticalMovement = AdjustForSprinting(verticalMovement, horizontalMovement, isSprinting);
+        Animator.SetFloat(VerticalHash, adjustedVerticalMovement, animationDampTime, delta);
+        Animator.SetFloat(HorizontalHash, horizontalMovement, animationDampTime, delta);
     }
 
-    public void EnableRotation() { canRotate = true; }
+    private float AdjustForSprinting(float verticalMovement, float horizontalMovement, bool isSprinting)
+    {
+        bool isMoving = verticalMovement != 0 || horizontalMovement != 0;
+        return isSprinting && isMoving ? 2.0f : verticalMovement;
+    }
 
-    public void DisableRotation() { canRotate = false; }
+    public void EnableRotation() => CanRotate = true;
+
+    public void DisableRotation() => CanRotate = false;
+
+    public void SetAnimatorState(bool isEnabled) => Animator.enabled = isEnabled;
 }
