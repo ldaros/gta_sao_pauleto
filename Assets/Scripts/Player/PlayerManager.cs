@@ -7,8 +7,10 @@ public class PlayerManager : MonoBehaviour
     public bool IsDead;
     public bool IsGrounded;
     public bool IsSprinting;
+    public bool IsAiming;
     public bool IsRagdoll;
     public bool CanJump;
+    public bool CanShoot;
     public bool CanAttack;
 
     private PlayerInput playerInput;

@@ -5,7 +5,9 @@ public class PlayerInput : MonoBehaviour
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
-    [SerializeField] private KeyCode attackKey = KeyCode.Mouse0;
+    [SerializeField] private KeyCode attackKey = KeyCode.Q;
+    [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
+    [SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
 
     public float Horizontal { get; private set; }
     public float Vertical { get; private set; }
@@ -13,6 +15,9 @@ public class PlayerInput : MonoBehaviour
     public bool Sprint { get; private set; }
     public bool Jump { get; private set; }
     public bool Attack { get; private set; }
+    public bool Aim { get; private set; }
+    public bool Shoot { get; private set; }
+
 
     private void Update()
     {
@@ -31,6 +36,8 @@ public class PlayerInput : MonoBehaviour
     {
         Jump = Input.GetKeyDown(jumpKey);
         Attack = Input.GetKeyDown(attackKey);
+        Shoot = Input.GetKeyDown(shootKey);
         Sprint = Input.GetKey(sprintKey);
+        Aim = Input.GetKey(aimKey);
     }
 }

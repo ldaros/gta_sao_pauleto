@@ -14,6 +14,7 @@ public class AnimatorHandler : MonoBehaviour
     private static readonly int VerticalHash = Animator.StringToHash("Vertical");
     private static readonly int HorizontalHash = Animator.StringToHash("Horizontal");
     private static readonly int IsInteractingHash = Animator.StringToHash("isInteracting");
+    private static readonly int IsAimingHash = Animator.StringToHash("isAiming");
 
     private void Awake()
     {
@@ -26,11 +27,12 @@ public class AnimatorHandler : MonoBehaviour
         Animator.CrossFade(animation, animationTransitionDuration);
     }
 
-    public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting, float delta)
+    public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting, bool isAiming, float delta)
     {
         float adjustedVerticalMovement = AdjustForSprinting(verticalMovement, horizontalMovement, isSprinting);
         Animator.SetFloat(VerticalHash, adjustedVerticalMovement, animationDampTime, delta);
         Animator.SetFloat(HorizontalHash, horizontalMovement, animationDampTime, delta);
+        Animator.SetBool(IsAimingHash, isAiming);
     }
 
     private float AdjustForSprinting(float verticalMovement, float horizontalMovement, bool isSprinting)

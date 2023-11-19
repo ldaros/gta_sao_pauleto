@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using Cinemachine;
+using UnityEngine.UI;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -8,16 +10,29 @@ public class PlayerCamera : MonoBehaviour
     public Transform player;
     public Transform playerObject;
     public Rigidbody rigidBody;
-
-    public Transform cinemachineCamera;
+    public CinemachineFreeLook cinemachineCamera;
+    public Camera mainCamera;
+    public RawImage crosshair;
+    public Transform aimLookAt;
 
     [Header("Settings")]
     public float rotationSpeed;
     public bool lockRotation = false;
+    public float normalFOV = 40f;
+    public float aimingFOV = 20f;
+
+    private PlayerManager playerManager;
 
     private void Start()
     {
+        InitializeComponents();
         ConfigureCursor();
+        SetNormalView();
+    }
+
+    private void InitializeComponents()
+    {
+        playerManager = GetComponent<PlayerManager>();
     }
 
     private void Update()
@@ -25,8 +40,32 @@ public class PlayerCamera : MonoBehaviour
         if (!lockRotation)
         {
             UpdateCameraDirection();
-            RotatePlayerObject();
+            if (playerManager.IsAiming && playerManager.IsGrounded)
+            {
+                RotatePlayerTowardsCameraDirection();
+                SetAimView();
+            }
+            else
+            {
+                RotatePlayerObject();
+                SetNormalView();
+            }
         }
+    }
+
+    private void SetAimView()
+    {
+        cinemachineCamera.LookAt = aimLookAt;
+        cinemachineCamera.m_Lens.FieldOfView = aimingFOV;
+        crosshair.enabled = true;
+
+    }
+
+    private void SetNormalView()
+    {
+        cinemachineCamera.LookAt = player;
+        cinemachineCamera.m_Lens.FieldOfView = normalFOV;
+        crosshair.enabled = false;
     }
 
     private void ConfigureCursor()
@@ -44,7 +83,7 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 CalculateViewDirection()
     {
         float playerY = player.position.y;
-        Vector3 cameraXZPosition = new Vector3(cinemachineCamera.position.x, playerY, cinemachineCamera.position.z);
+        Vector3 cameraXZPosition = new Vector3(cinemachineCamera.transform.position.x, playerY, cinemachineCamera.transform.position.z);
         return player.position - cameraXZPosition;
     }
 
@@ -57,11 +96,23 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
+    private void RotatePlayerTowardsCameraDirection()
+    {
+        Vector3 cameraDirection = orientation.forward;
+        cameraDirection.y = 0; // Keep only the horizontal direction
+        playerObject.forward = Vector3.Slerp(playerObject.forward, cameraDirection, Time.deltaTime * rotationSpeed);
+    }
+
     private Vector3 GetInputDirection()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         return orientation.forward * verticalInput + orientation.right * horizontalInput;
+    }
+
+    public Camera GetMainCamera()
+    {
+        return mainCamera;
     }
 
     internal void SetCameraLock(bool enable)

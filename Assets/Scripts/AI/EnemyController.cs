@@ -72,7 +72,7 @@ public class EnemyController : MonoBehaviour
     private void UpdateAnimatorValues()
     {
         float speed = _navMeshAgent.velocity.magnitude;
-        _animationHandler.UpdateAnimatorValues(speed, 0, false, Time.deltaTime);
+        _animationHandler.UpdateAnimatorValues(speed, 0, false, false, Time.deltaTime);
     }
 
     public void TakeHit()
@@ -85,6 +85,12 @@ public class EnemyController : MonoBehaviour
 
         EnableRagdoll();
         bloodParticles.Play();
+        Die();
+    }
+
+    public void TakeShot()
+    {
+        Gib();
         Die();
     }
 

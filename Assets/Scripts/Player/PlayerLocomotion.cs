@@ -50,6 +50,7 @@ public class PlayerLocomotion : MonoBehaviour
 
         CheckGroundStatus(delta);
         ApplyGroundDrag();
+        HandleAiming();
         HandleSprint();
         HandleJump();
         UpdateAnimator(delta);
@@ -100,11 +101,19 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleJump()
     {
-        if (playerManager.IsDead || !inputHandler.Jump || !playerManager.CanJump || !playerManager.IsGrounded) return;
+        if (playerManager.IsDead || !inputHandler.Jump || !playerManager.CanJump
+            || !playerManager.IsGrounded || playerManager.IsAiming) return;
 
         playerManager.CanJump = false;
         Jump();
         Invoke(nameof(ResetJump), jumpCooldown);
+    }
+
+    private void HandleAiming()
+    {
+        if (playerManager.IsDead) return;
+
+        playerManager.IsAiming = inputHandler.Aim;
     }
 
     private void HandleSprint()
@@ -121,13 +130,15 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void MovePlayer()
     {
+        if (playerManager.IsDead || playerManager.IsAiming) return;
+
         movementDirection = orientation.forward * inputHandler.Vertical + orientation.right * inputHandler.Horizontal;
         rigidBody.AddForce(CalculateMovementForce(), ForceMode.Force);
     }
 
     private void HandleFootstepSounds(float delta)
     {
-        if (IsMoving() && playerManager.IsGrounded)
+        if (IsMoving() && playerManager.IsGrounded && !playerManager.IsAiming)
         {
             stepTimer += delta;
             float rate = playerManager.IsSprinting ? sprintStepRate : stepRate;
@@ -181,7 +192,8 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void UpdateAnimator(float delta)
     {
-        animatorHandler.UpdateAnimatorValues(inputHandler.MoveAmount, 0, playerManager.IsSprinting, delta);
+        animatorHandler.UpdateAnimatorValues(inputHandler.MoveAmount, 0,
+            playerManager.IsSprinting, playerManager.IsAiming, delta);
     }
 
     private void PlayFootstepSound()
