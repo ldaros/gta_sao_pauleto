@@ -68,6 +68,14 @@ public class PlayerCamera : MonoBehaviour
         crosshair.enabled = false;
     }
 
+    public void SetCustomView(Transform view)
+    {
+        cinemachineCamera.LookAt = view;
+        cinemachineCamera.Follow = view;
+        cinemachineCamera.m_Lens.FieldOfView = normalFOV;
+        crosshair.enabled = false;
+    }
+
     private void ConfigureCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;

@@ -222,11 +222,16 @@ public class PlayerLocomotion : MonoBehaviour
         foreach (Collider col in colliders)
             col.enabled = enable;
 
-        rigidBody.isKinematic = enable;
-        rigidBody.useGravity = !enable;
+        if (enable)
+        {
+            Collider col = GetComponent<Collider>();
+            col.isTrigger = true;
+            rigidBody.isKinematic = enable;
+        }
 
         animatorHandler.SetAnimatorState(!enable);
         cameraHandler.SetCameraLock(enable);
+        cameraHandler.SetCustomView(rootBone.transform);
     }
 
     private void OnDrawGizmosSelected()

@@ -25,6 +25,7 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] private GameObject weaponObject;
     [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private GameObject bulletParticles;
     [SerializeField] private float bulletHoleDespawnTime = 10f;
 
     private Coroutine attackCooldownCoroutine;
@@ -72,6 +73,7 @@ public class PlayerCombat : MonoBehaviour
     {
         Ray ray = cameraHandler.GetMainCamera().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
+        animatorHandler.PlayTargetAnimation("Firing", true);
         audioSource.PlayOneShot(shootingSound);
         playerManager.CanShoot = false;
 
@@ -94,31 +96,40 @@ public class PlayerCombat : MonoBehaviour
         if ((objectLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
         {
             ApplyForceToRigidbody(hit.collider.GetComponent<Rigidbody>(), pushForce, 0);
+            CreateBulletParticles(hit.point, hit.normal);
             return;
         }
 
         if ((groundLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
         {
             CreateBulletHole(hit.point, hit.normal);
+            CreateBulletParticles(hit.point, hit.normal);
             return;
         }
     }
 
     private void CreateBulletHole(Vector3 position, Vector3 normal)
     {
-        Quaternion holeRotation = Quaternion.LookRotation(normal);
-
-        holeRotation *= Quaternion.Euler(90, 0, 0);
-
-        GameObject bulletHole = Instantiate(bulletHolePrefab, position, holeRotation);
+        Quaternion holeRotation = Quaternion.FromToRotation(Vector3.up, normal);
+        GameObject bulletHole = Instantiate(bulletHolePrefab, position + (normal * .01f), holeRotation);
 
         // Start coroutine to despawn the bullet hole after a set duration
-        StartCoroutine(Despawn(bulletHole));
+        StartCoroutine(Despawn(bulletHole, bulletHoleDespawnTime));
     }
 
-    private IEnumerator Despawn(GameObject obj)
+    private void CreateBulletParticles(Vector3 position, Vector3 normal)
     {
-        yield return new WaitForSeconds(bulletHoleDespawnTime);
+        Quaternion particleRotation = Quaternion.LookRotation(normal);
+
+        GameObject particles = Instantiate(bulletParticles, position, particleRotation);
+
+        // Start coroutine to despawn the bullet hole after a set duration
+        StartCoroutine(Despawn(particles, 1f));
+    }
+
+    private IEnumerator Despawn(GameObject obj, float duration)
+    {
+        yield return new WaitForSeconds(duration);
         Destroy(obj);
     }
 
