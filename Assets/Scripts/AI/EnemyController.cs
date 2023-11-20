@@ -30,6 +30,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private ParticleSystem gibParticles;
 
     [SerializeField] private MeshRenderer enemyMesh;
+    [SerializeField] private GameObject icon;
 
     public bool IsDead { get; private set; } = false;
 
@@ -61,6 +62,7 @@ public class EnemyController : MonoBehaviour
         seekPlayer();
         UpdateAnimatorValues();
         handleFootsteps();
+        LockIconRotation();
     }
 
     private void FixedUpdate()
@@ -212,6 +214,8 @@ public class EnemyController : MonoBehaviour
         if (IsDead) return;
         _audioSource.PlayOneShot(deathSound);
         IsDead = true;
+
+        icon.SetActive(false);
     }
 
     public void EnableRagdoll()
@@ -221,6 +225,11 @@ public class EnemyController : MonoBehaviour
         _rigidbody.isKinematic = false;
     }
 
+    private void LockIconRotation()
+    {
+        icon.transform.rotation = Quaternion.Euler(90, 0, 180);
+    }
+    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = IsPlayerInSight ? Color.green : Color.red;
