@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private ParticleSystem bloodParticles;
     [SerializeField] private TextMeshProUGUI healthText;
-
+    
     private PlayerManager playerManager;
     private PlayerLocomotion playerLocomotion;
     private AnimatorHandler animatorHandler;
