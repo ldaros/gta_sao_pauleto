@@ -11,6 +11,7 @@ namespace Player
         [SerializeField] private KeyCode attackKey = KeyCode.Q;
         [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
         [SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
+        [SerializeField] private KeyCode enterVehicleKey = KeyCode.F;
 
         public float Horizontal { get; private set; }
         public float Vertical { get; private set; }
@@ -20,6 +21,7 @@ namespace Player
         public bool Attack { get; private set; }
         public bool Aim { get; private set; }
         public bool Shoot { get; private set; }
+        public bool EnterVehicle { get; private set; }
 
 
         private void Update()
@@ -42,6 +44,7 @@ namespace Player
             Shoot = Input.GetKeyDown(shootKey);
             Sprint = Input.GetKey(sprintKey);
             Aim = Input.GetKey(aimKey);
+            EnterVehicle = Input.GetKeyDown(enterVehicleKey);
         }
     }
 }

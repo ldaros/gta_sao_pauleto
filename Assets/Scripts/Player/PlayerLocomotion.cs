@@ -1,5 +1,6 @@
 using Animation;
 using UnityEngine;
+using Vehicle;
 
 namespace Player
 {
@@ -27,6 +28,8 @@ namespace Player
         [SerializeField] private float stepRate = 0.5f;
         [SerializeField] private float sprintStepRate = 0.3f;
 
+        [SerializeField] private VehicleController vehicle;
+
         private Rigidbody rigidBody;
         private PlayerManager playerManager;
         private AudioSource audioSource;
@@ -39,6 +42,8 @@ namespace Player
         private float stepTimer;
         private int stepCounter;
 
+        private bool insideVehicle;
+
         private void Start()
         {
             InitializeComponents();
@@ -47,6 +52,9 @@ namespace Player
         private void Update()
         {
             float delta = Time.deltaTime;
+
+            HandleEnterVehicle();
+            if (insideVehicle) return;
 
             CheckGroundStatus(delta);
             ApplyGroundDrag();
@@ -61,6 +69,61 @@ namespace Player
         {
             MovePlayer();
             LimitHorizontalVelocity();
+        }
+
+        private void HandleEnterVehicle()
+        {
+            if (inputHandler.EnterVehicle)
+            {
+                if (insideVehicle)
+                {
+                    ExitVehicle();
+                }
+                else
+                {
+                    EnterVehicle();
+                }
+            }
+        }
+
+        private void EnterVehicle()
+        {
+            insideVehicle = true;
+            ToggleVisibility(false);
+            FollowVehicle();
+            vehicle.SetPlayerInVehicle(true);
+        }
+
+        private void ExitVehicle()
+        {
+            insideVehicle = false;
+            ToggleVisibility(true);
+            vehicle.SetPlayerInVehicle(false);
+            var playerPosition = transform;
+            playerPosition.parent = null;
+
+            var vehicleTransform = vehicle.transform;
+            var vehiclePosition = vehicleTransform.position;
+            playerPosition.position = new Vector3(vehiclePosition.x, vehiclePosition.y + 1,
+                vehiclePosition.z);
+
+            transform.rotation = Quaternion.Euler(0, vehicleTransform.rotation.eulerAngles.y, 0);
+        }
+
+        private void ToggleVisibility(bool visible)
+        {
+            rigidBody.isKinematic = !visible;
+            GetComponent<Collider>().enabled = visible;
+            GetComponentInChildren<SkinnedMeshRenderer>().enabled = visible;
+        }
+
+
+        private void FollowVehicle()
+        {
+            var playerTransform = transform;
+            playerTransform.parent = vehicle.transform;
+            playerTransform.localPosition = new Vector3(0, 0, 0);
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
         }
 
         private void InitializeComponents()
