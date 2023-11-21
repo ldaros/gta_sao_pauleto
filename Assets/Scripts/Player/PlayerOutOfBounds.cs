@@ -1,78 +1,81 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerOutOfBounds : MonoBehaviour
+namespace Player
 {
-    [Header("References")]
-    public Transform player;
-
-    [Header("Settings")]
-    public float maxY = -100f;
-
-    private List<Transform> safeZones;
-
-    private void Start()
+    public class PlayerOutOfBounds : MonoBehaviour
     {
-        safeZones = FindSafeZones();
-    }
+        [Header("References")]
+        public Transform player;
 
-    private void Update()
-    {
-        if (PlayerIsOutOfBounds())
+        [Header("Settings")]
+        public float maxY = -100f;
+
+        private List<Transform> safeZones;
+
+        private void Start()
         {
-            Transform closestSafeZone = GetClosestSafeZone();
-            if (closestSafeZone != null)
-            {
-                ReturnPlayerInBounds(closestSafeZone);
-            }
+            safeZones = FindSafeZones();
         }
-    }
 
-    private List<Transform> FindSafeZones()
-    {
-        List<Transform> foundSafeZones = new List<Transform>();
-        foreach (GameObject safeZoneObject in GameObject.FindGameObjectsWithTag("SafeZone"))
+        private void Update()
         {
-            foundSafeZones.Add(safeZoneObject.transform);
-        }
-        return foundSafeZones;
-    }
-
-    private bool PlayerIsOutOfBounds()
-    {
-        return player.position.y < maxY;
-    }
-
-    private Transform GetClosestSafeZone()
-    {
-        float closestDistance = Mathf.Infinity;
-        Transform closestSafeZone = null;
-
-        foreach (Transform safeZone in safeZones)
-        {
-            float distance = Vector3.Distance(player.position, safeZone.position);
-            if (distance < closestDistance)
+            if (PlayerIsOutOfBounds())
             {
-                closestSafeZone = safeZone;
-                closestDistance = distance;
+                Transform closestSafeZone = GetClosestSafeZone();
+                if (closestSafeZone != null)
+                {
+                    ReturnPlayerInBounds(closestSafeZone);
+                }
             }
         }
 
-        return closestSafeZone;
-    }
-
-    private void ReturnPlayerInBounds(Transform safeZone)
-    {
-        player.position = safeZone.position;
-        ResetPlayerVelocity();
-        Debug.Log("Player returned to the safe zone.");
-    }
-
-    private void ResetPlayerVelocity()
-    {
-        if (player.TryGetComponent(out Rigidbody rigidBody))
+        private List<Transform> FindSafeZones()
         {
-            rigidBody.velocity = Vector3.zero;
+            List<Transform> foundSafeZones = new List<Transform>();
+            foreach (GameObject safeZoneObject in GameObject.FindGameObjectsWithTag("SafeZone"))
+            {
+                foundSafeZones.Add(safeZoneObject.transform);
+            }
+            return foundSafeZones;
+        }
+
+        private bool PlayerIsOutOfBounds()
+        {
+            return player.position.y < maxY;
+        }
+
+        private Transform GetClosestSafeZone()
+        {
+            float closestDistance = Mathf.Infinity;
+            Transform closestSafeZone = null;
+
+            foreach (Transform safeZone in safeZones)
+            {
+                float distance = Vector3.Distance(player.position, safeZone.position);
+                if (distance < closestDistance)
+                {
+                    closestSafeZone = safeZone;
+                    closestDistance = distance;
+                }
+            }
+
+            return closestSafeZone;
+        }
+
+        private void ReturnPlayerInBounds(Transform safeZone)
+        {
+            player.position = safeZone.position;
+            ResetPlayerVelocity();
+            Debug.Log("Player returned to the safe zone.");
+        }
+
+        private void ResetPlayerVelocity()
+        {
+            if (player.TryGetComponent(out Rigidbody rigidBody))
+            {
+                rigidBody.velocity = Vector3.zero;
+            }
         }
     }
 }

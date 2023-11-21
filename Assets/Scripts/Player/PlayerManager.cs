@@ -1,56 +1,59 @@
+using Animation;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class PlayerManager : MonoBehaviour
+namespace Player
 {
-    [Header("Flags")]
-    public bool isInteracting;
-    public bool IsDead;
-    public bool IsGrounded;
-    public bool IsSprinting;
-    public bool IsAiming;
-    public bool IsRagdoll;
-    public bool CanJump;
-    public bool CanShoot;
-    public bool CanAttack;
-
-    private PlayerInput playerInput;
-    private PlayerCamera cameraHandler;
-    private PlayerLocomotion playerLocomotion;
-    private PlayerCombat playerCombat;
-    private PlayerOutOfBounds playerOutOfBounds;
-    private PlayerHealth playerHealth;
-    private Animator animator;
-    private AnimatorHandler animatorHandler;
-    private AudioSource audioSource;
-
-    private void Awake()
+    public class PlayerManager : MonoBehaviour
     {
-        InitializeComponents();
-    }
+        [Header("Flags")] public bool isInteracting;
+        [FormerlySerializedAs("IsDead")] public bool isDead;
+        [FormerlySerializedAs("IsGrounded")] public bool isGrounded;
+        [FormerlySerializedAs("IsSprinting")] public bool isSprinting;
+        [FormerlySerializedAs("IsAiming")] public bool isAiming;
+        [FormerlySerializedAs("IsRagdoll")] public bool isRagdoll;
+        [FormerlySerializedAs("CanJump")] public bool canJump;
+        [FormerlySerializedAs("CanShoot")] public bool canShoot;
+        [FormerlySerializedAs("CanAttack")] public bool canAttack;
 
-    private void Update()
-    {
-        float delta = Time.deltaTime;
-        isInteracting = animator.GetBool("isInteracting");
-    }
+        private PlayerInput playerInput;
+        private PlayerCamera cameraHandler;
+        private PlayerLocomotion playerLocomotion;
+        private PlayerHealth playerHealth;
+        private Animator animator;
+        private AnimatorHandler animatorHandler;
+        private AudioSource audioSource;
 
-    private void InitializeComponents()
-    {
-        playerInput = GetComponent<PlayerInput>();
-        playerLocomotion = GetComponent<PlayerLocomotion>();
-        playerHealth = GetComponent<PlayerHealth>();
-        playerCombat = GetComponent<PlayerCombat>();
-        playerOutOfBounds = GetComponent<PlayerOutOfBounds>();
-        cameraHandler = GetComponent<PlayerCamera>();
-        audioSource = GetComponent<AudioSource>();
-        animator = GetComponentInChildren<Animator>();
-        animatorHandler = GetComponentInChildren<AnimatorHandler>();
-    }
+        private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
 
-    public AudioSource GetAudioSource() => audioSource;
-    public PlayerHealth GetHealth() => playerHealth;
-    public PlayerCamera GetCameraHandler() => cameraHandler;
-    public AnimatorHandler GetAnimatorHandler() => animatorHandler;
-    public PlayerInput GetPlayerInput() => playerInput;
-    public PlayerLocomotion GetPlayerLocomotion() => playerLocomotion;
+        private void Awake()
+        {
+            InitializeComponents();
+        }
+
+        private void Update()
+        {
+            isInteracting = animator.GetBool(IsInteracting);
+        }
+
+        private void InitializeComponents()
+        {
+            playerInput = GetComponent<PlayerInput>();
+            playerLocomotion = GetComponent<PlayerLocomotion>();
+            playerHealth = GetComponent<PlayerHealth>();
+            GetComponent<PlayerCombat>();
+            GetComponent<PlayerOutOfBounds>();
+            cameraHandler = GetComponent<PlayerCamera>();
+            audioSource = GetComponent<AudioSource>();
+            animator = GetComponentInChildren<Animator>();
+            animatorHandler = GetComponentInChildren<AnimatorHandler>();
+        }
+
+        public AudioSource GetAudioSource() => audioSource;
+        public PlayerHealth GetHealth() => playerHealth;
+        public PlayerCamera GetCameraHandler() => cameraHandler;
+        public AnimatorHandler GetAnimatorHandler() => animatorHandler;
+        public PlayerInput GetPlayerInput() => playerInput;
+        public PlayerLocomotion GetPlayerLocomotion() => playerLocomotion;
+    }
 }
