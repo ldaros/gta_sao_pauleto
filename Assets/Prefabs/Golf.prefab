@@ -143,7 +143,7 @@ MonoBehaviour:
   frontRightWheelTransform: {fileID: 4186937731305081935}
   backLeftWheelTransform: {fileID: 3675911211893672117}
   backRightWheelTransform: {fileID: 356851490237981378}
-  acceleration: 500
+  acceleration: 800
   breakingForce: 800
   maxTurnAngle: 40
   exitPoint: {fileID: 6251900140298355990}
