@@ -73,13 +73,17 @@ namespace Player
 
         private void HandleEnterVehicle()
         {
+            var postion = transform.position;
+            var vehiclePosition = vehicle.transform.position;
+            var distance = Vector3.Distance(postion, vehiclePosition);
+            
             if (inputHandler.EnterVehicle)
             {
                 if (insideVehicle)
                 {
                     ExitVehicle();
                 }
-                else
+                else if (distance < 2f)
                 {
                     EnterVehicle();
                 }
@@ -104,10 +108,9 @@ namespace Player
 
             var vehicleTransform = vehicle.transform;
             var vehiclePosition = vehicleTransform.position;
-            playerPosition.position = new Vector3(vehiclePosition.x, vehiclePosition.y + 1,
-                vehiclePosition.z);
+            playerPosition.position = vehicle.GetExitPoint();
 
-            transform.rotation = Quaternion.Euler(0, vehicleTransform.rotation.eulerAngles.y, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         private void ToggleVisibility(bool visible)

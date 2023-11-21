@@ -4,14 +4,15 @@ namespace Player
 {
     public class PlayerInput : MonoBehaviour
     {
-        [Header("Keybindings")] [SerializeField]
-        private KeyCode jumpKey = KeyCode.Space;
-
+        [Header("Keybindings")]
+        [SerializeField] private KeyCode jumpKey = KeyCode.Space;
         [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
         [SerializeField] private KeyCode attackKey = KeyCode.Q;
         [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
         [SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
         [SerializeField] private KeyCode enterVehicleKey = KeyCode.F;
+        [SerializeField] private KeyCode brakeKey = KeyCode.Space;
+
 
         public float Horizontal { get; private set; }
         public float Vertical { get; private set; }
@@ -22,6 +23,7 @@ namespace Player
         public bool Aim { get; private set; }
         public bool Shoot { get; private set; }
         public bool EnterVehicle { get; private set; }
+        public bool Brake { get; private set; }
 
 
         private void Update()
@@ -43,6 +45,7 @@ namespace Player
             Attack = Input.GetKeyDown(attackKey);
             Shoot = Input.GetKeyDown(shootKey);
             Sprint = Input.GetKey(sprintKey);
+            Brake = Input.GetKey(brakeKey);
             Aim = Input.GetKey(aimKey);
             EnterVehicle = Input.GetKeyDown(enterVehicleKey);
         }
