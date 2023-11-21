@@ -1,244 +1,268 @@
+using System.Collections;
+using Animation;
+using Environment;
+using Player;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
+using Utils;
 
-public class EnemyController : MonoBehaviour
+namespace AI
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float viewRadius = 10f;
-    [SerializeField] private float outOfBoundsY = -10f;
-
-    [Header("Ground Check")]
-    [SerializeField] private float enemyHeight = 2f;
-    [SerializeField] private LayerMask groundMask;
-    [SerializeField] private LayerMask playerMask;
-
-    [Header("Sound")]
-    [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip attackSound;
-    [SerializeField] private AudioClip footstepSound;
-    [SerializeField] private AudioClip gibSound;
-    [SerializeField] private float stepRate = 0.5f;
-
-    [Header("Combat")]
-    [SerializeField] private float attackRange = 2f;
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackCooldown = 1f;
-    [SerializeField] private int gibAfter = 3;
-
-    [SerializeField] private ParticleSystem bloodParticles;
-    [SerializeField] private ParticleSystem gibParticles;
-
-    [SerializeField] private MeshRenderer enemyMesh;
-    [SerializeField] private GameObject icon;
-
-    public bool IsDead { get; private set; } = false;
-
-    public bool IsGrounded { get; private set; }
-    public bool IsPlayerInSight { get; private set; }
-    public bool IsRagdoll { get; private set; } = false;
-    public bool IsGibbed { get; private set; } = false;
-    public bool canAttack { get; private set; } = true;
-
-    private Rigidbody _rigidbody;
-    private GameObject _player;
-    private NavMeshAgent _navMeshAgent;
-    private AudioSource _audioSource;
-    private float stepTimer;
-    private PlayerHealth _playerHealth;
-    private AnimatorHandler _animationHandler;
-    private SpawnGibs _spawnGibs;
-    private int hitCount = 0;
-
-    private void Awake()
+    public class EnemyController : MonoBehaviour
     {
-        InitializeComponents();
-    }
+        [Header("Movement Settings")]
+        [SerializeField] private LayerMask playerMask;
+        [SerializeField] private LayerMask groundMask;
+        [SerializeField] private float walkPointRange;
+        [SerializeField] private float waitTime = 1f;
+        [SerializeField] private float outOfBoundsY = -10f;
 
-    private void Update()
-    {
-        HandleOutOfBounds();
-        PerformGroundCheck();
-        seekPlayer();
-        UpdateAnimatorValues();
-        handleFootsteps();
-        LockIconRotation();
-    }
+        [Header("Combat")]
+        [SerializeField] private float attackRange = 2f;
+        [SerializeField] private float viewRadius = 10f;
+        [SerializeField] private float attackDamage = 10f;
+        [SerializeField] private float attackCooldown = 1f;
+        [SerializeField] private int gibAfter = 3;
 
-    private void FixedUpdate()
-    {
-        PursuePlayer();
-        attackPlayer();
-    }
+        [Header("Sound")]
+        [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip attackSound;
+        [SerializeField] private AudioClip footstepSound;
+        [SerializeField] private AudioClip gibSound;
+        [SerializeField] private float stepRate = 0.5f;
 
-    private void UpdateAnimatorValues()
-    {
-        float speed = _navMeshAgent.velocity.magnitude;
-        _animationHandler.UpdateAnimatorValues(speed, 0, false, false, Time.deltaTime);
-    }
+        [Header("Effects")]
+        [SerializeField] private ParticleSystem bloodParticles;
+        [SerializeField] private ParticleSystem gibParticles;
+        [SerializeField] private MeshRenderer mesh;
+        [SerializeField] private GameObject icon;
 
-    public void TakeHit()
-    {
-        hitCount++;
-        if (hitCount >= gibAfter)
+        public bool PlayerInSight { get; private set; }
+        public bool PlayerInAttackRange { get; private set; }
+        public bool IsDead { get; private set; }
+        public bool IsRagdoll { get; private set; }
+        public bool IsGibbed { get; private set; }
+        public bool CanAttack { get; private set; } = true;
+
+        public bool WalkPointSet { get; private set; }
+
+        public bool CanWalk { get; private set; } = true;
+
+        private new Rigidbody rigidbody;
+        private GameObject player;
+        private NavMeshAgent navMeshAgent;
+        private AudioSource audioSource;
+        private float stepTimer;
+        private PlayerHealth playerHealth;
+        private AnimatorHandler animationHandler;
+        private SpawnGibs spawnGibs;
+        private int hitCount;
+        private Vector3 walkPoint;
+
+        private void Awake()
         {
-            Gib();
+            InitializeComponents();
         }
 
-        EnableRagdoll();
-        bloodParticles.Play();
-        Die();
-    }
-
-    public void TakeShot()
-    {
-        Gib();
-        Die();
-    }
-
-    private void Gib()
-    {
-        if (IsGibbed) return;
-        IsGibbed = true;
-        HideMesh();
-        gibParticles.Play();
-        _spawnGibs.SpawnMultipleGibs(transform.position, 5);
-        _audioSource.PlayOneShot(gibSound);
-
-        StartCoroutine(destroyAfterTimer(2f));
-    }
-
-    private void HideMesh()
-    {
-        enemyMesh.enabled = false;
-    }
-
-    private IEnumerator destroyAfterTimer(float timer)
-    {
-        yield return new WaitForSeconds(5.1f);
-        Destroy(gameObject);
-    }
-
-    private void handleFootsteps()
-    {
-        if (IsMoving())
+        private void Update()
         {
-            stepTimer += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            var position = transform.position;
 
-            if (stepTimer >= stepRate)
+            PlayerInSight = Physics.CheckSphere(position, viewRadius, playerMask);
+            PlayerInAttackRange = Physics.CheckSphere(position, attackRange, playerMask);
+
+            HandleOutOfBounds(position);
+
+            if (IsRagdoll || IsDead) return;
+
+            if (!PlayerInSight && !PlayerInAttackRange) Patrolling(position);
+            if (PlayerInSight && !PlayerInAttackRange) PursuePlayer();
+            if (PlayerInSight && PlayerInAttackRange) AttackPlayer();
+
+            HandleFootsteps(deltaTime);
+            UpdateAnimatorValues(deltaTime);
+        }
+
+        private void Patrolling(Vector3 position)
+        {
+            if (!WalkPointSet)
             {
-                _audioSource.PlayOneShot(footstepSound);
-                stepTimer = 0;
+                SearchWalkPoint(position);
+            }
+
+            if (WalkPointSet && CanWalk)
+                navMeshAgent.SetDestination(walkPoint);
+
+            Vector3 distanceToWalkPoint = position - walkPoint;
+
+            // Walk point reached
+            if (distanceToWalkPoint.magnitude < 1f)
+            {
+                WalkPointSet = false;
+                CanWalk = false;
+                StartCoroutine(WaitForWalkPoint());
             }
         }
-    }
 
-    private void attackPlayer()
-    {
-        if (isInAttackRange() && canAttack && playerIsAlive() && !IsDead)
+        private IEnumerator WaitForWalkPoint()
         {
-            _audioSource.PlayOneShot(attackSound);
-            _animationHandler.PlayTargetAnimation("Bite", true);
-            _playerHealth.TakeDamage(attackDamage);
-            canAttack = false;
-            StartCoroutine(attackCooldownTimer());
+            yield return new WaitForSeconds(waitTime);
+            CanWalk = true;
         }
-    }
 
-    private bool isInAttackRange()
-    {
-        return Physics.CheckSphere(transform.position, attackRange, playerMask);
-    }
-
-    private IEnumerator attackCooldownTimer()
-    {
-        yield return new WaitForSeconds(attackCooldown);
-        canAttack = true;
-    }
-
-    private bool IsMoving()
-    {
-        return _navMeshAgent.velocity.magnitude > 0;
-    }
-
-    private void InitializeComponents()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _playerHealth = _player.GetComponent<PlayerHealth>();
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        _audioSource = GetComponent<AudioSource>();
-        _animationHandler = GetComponent<AnimatorHandler>();
-        _spawnGibs = GetComponent<SpawnGibs>();
-    }
-
-    private void PerformGroundCheck()
-    {
-        IsGrounded = Physics.Raycast(transform.position, Vector3.down, enemyHeight / 2 + 0.2f, groundMask);
-    }
-
-    private void HandleOutOfBounds()
-    {
-        if (transform.position.y < outOfBoundsY)
+        private void SearchWalkPoint(Vector3 position)
         {
-            Destroy(gameObject);
-        }
-    }
-    private void PursuePlayer()
-    {
-        if (IsRagdoll || IsDead) return;
+            //Calculate random point in range
+            float randomZ = Random.Range(-walkPointRange, walkPointRange);
+            float randomX = Random.Range(-walkPointRange, walkPointRange);
 
-        if (IsPlayerInSight && _navMeshAgent.isOnNavMesh)
+            walkPoint = new Vector3(position.x + randomX, position.y,
+                position.z + randomZ);
+
+            if (Physics.Raycast(walkPoint, -transform.up, 2f, groundMask))
+                WalkPointSet = true;
+        }
+
+        private void UpdateAnimatorValues(float delta)
         {
-            _navMeshAgent.SetDestination(_player.transform.position);
+            float speed = navMeshAgent.velocity.magnitude;
+            animationHandler.UpdateAnimatorValues(speed, 0, false, false, delta);
         }
-        else
+
+        public void TakeHit()
         {
-            _navMeshAgent.ResetPath();
+            hitCount++;
+            if (hitCount >= gibAfter)
+            {
+                Gib();
+            }
+
+            EnableRagdoll();
+            bloodParticles.Play();
+            Die();
         }
-    }
 
-    private void seekPlayer()
-    {
-        if (!playerIsAlive() || IsDead) return;
-        IsPlayerInSight = Physics.CheckSphere(transform.position, viewRadius, playerMask);
-    }
+        public void TakeShot()
+        {
+            Gib();
+            Die();
+        }
 
-    private bool playerIsAlive()
-    {
-        return _playerHealth.CurrentHealth > 0;
-    }
+        private void Gib()
+        {
+            if (IsGibbed) return;
+            IsGibbed = true;
+            HideMesh();
+            gibParticles.Play();
+            spawnGibs.SpawnMultipleGibs(transform.position, 5);
+            audioSource.PlayOneShot(gibSound);
+            StartCoroutine(ObjectUtils.DestroyAfter(gameObject, 5f));
+        }
 
-    private void Die()
-    {
-        if (IsDead) return;
-        _audioSource.PlayOneShot(deathSound);
-        IsDead = true;
+        private void HideMesh()
+        {
+            mesh.enabled = false;
+        }
 
-        icon.SetActive(false);
-    }
+        private void HandleFootsteps(float delta)
+        {
+            if (IsMoving())
+            {
+                stepTimer += delta;
 
-    public void EnableRagdoll()
-    {
-        IsRagdoll = true;
-        _navMeshAgent.enabled = false;
-        _rigidbody.isKinematic = false;
-    }
+                if (stepTimer >= stepRate)
+                {
+                    audioSource.PlayOneShot(footstepSound);
+                    stepTimer = 0;
+                }
+            }
+        }
 
-    private void LockIconRotation()
-    {
-        icon.transform.rotation = Quaternion.Euler(90, 0, 180);
-    }
-    
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = IsPlayerInSight ? Color.green : Color.red;
-        Gizmos.DrawWireSphere(transform.position, viewRadius);
+        private void AttackPlayer()
+        {
+            if (CanAttack && PlayerIsAlive())
+            {
+                audioSource.PlayOneShot(attackSound);
+                animationHandler.PlayTargetAnimation("Bite", true);
+                playerHealth.TakeDamage(attackDamage);
+                CanAttack = false;
+                StartCoroutine(AttackCooldownTimer());
+            }
+        }
 
-        Gizmos.color = IsGrounded ? Color.green : Color.red;
-        Gizmos.DrawRay(transform.position, Vector3.down * (enemyHeight / 2 + 0.2f));
+        private IEnumerator AttackCooldownTimer()
+        {
+            yield return new WaitForSeconds(attackCooldown);
+            CanAttack = true;
+        }
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        private bool IsMoving()
+        {
+            return navMeshAgent.velocity.magnitude > 0;
+        }
+
+        private void InitializeComponents()
+        {
+            rigidbody = GetComponent<Rigidbody>();
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerHealth = player.GetComponent<PlayerHealth>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
+            audioSource = GetComponent<AudioSource>();
+            animationHandler = GetComponent<AnimatorHandler>();
+            spawnGibs = GetComponent<SpawnGibs>();
+        }
+
+        private void HandleOutOfBounds(Vector3 position)
+        {
+            if (position.y < outOfBoundsY)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void PursuePlayer()
+        {
+            if (navMeshAgent.isOnNavMesh)
+            {
+                navMeshAgent.SetDestination(player.transform.position);
+            }
+            else if (navMeshAgent.hasPath)
+            {
+                navMeshAgent.ResetPath();
+            }
+        }
+
+        private bool PlayerIsAlive()
+        {
+            return playerHealth.CurrentHealth > 0;
+        }
+
+        private void Die()
+        {
+            if (IsDead) return;
+            audioSource.PlayOneShot(deathSound);
+            IsDead = true;
+
+            icon.SetActive(false);
+        }
+
+        private void EnableRagdoll()
+        {
+            IsRagdoll = true;
+            navMeshAgent.enabled = false;
+            rigidbody.isKinematic = false;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            var position = transform.position;
+
+            Gizmos.color = PlayerInSight ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(position, viewRadius);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(position, attackRange);
+        }
     }
 }
