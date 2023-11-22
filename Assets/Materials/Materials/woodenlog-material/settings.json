@@ -1,0 +1,23 @@
+{
+  "prompt_text": "Ultra realistic wood log surface texture, multiple wood logs stacked vertically , round shaped, length wise oriented , very detailed wood log surface , very fine quality wood material",
+  "patch": {
+    "ext": "png",
+    "dtype": "uint8",
+    "width": 512,
+    "height": 512,
+    "url": "https://static-dev.withpoly.com/v3-voronoi/textures/patches/374972fe-4ab6-4f1b-8110-568f9628070a.png",
+    "patch_id": "4PJkR6DKG5"
+  },
+  "seamless_prompt_text": "Ultra realistic wood log surface texture, multiple wood logs stacked vertically , round shaped, length wise oriented , very detailed wood log surface , very fine quality wood material",
+  "seamless_patch_scale": 0.9,
+  "upscale_prompt_text": "Ultra realistic wood log surface texture, multiple wood logs stacked vertically , round shaped, length wise oriented , very detailed wood log surface , very fine quality wood material",
+  "upscale_resolution": 8192,
+  "is_seamless": true,
+  "pbr_mode": "dramatic",
+  "pbr_generate_color": true,
+  "pbr_generate_normal": true,
+  "pbr_generate_height": true,
+  "pbr_generate_ao": true,
+  "pbr_generate_roughness": true,
+  "pbr_generate_metallic": false
+}
