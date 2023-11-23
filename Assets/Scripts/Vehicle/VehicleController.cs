@@ -23,10 +23,7 @@ namespace Vehicle
         [SerializeField] private float maxTurnAngle = 15f;
 
         [SerializeField] private Transform exitPoint;
-
         [SerializeField] private EngineSound engineSound;
-
-        [SerializeField] private BoxCollider frontCollider;
 
         private bool playerInVehicle;
         private float currentAcceleration;
@@ -47,11 +44,6 @@ namespace Vehicle
             }
         }
 
-        public float GetBreakingForce()
-        {
-            return currentBreakingForce;
-        }
-
         public Vector3 GetExitPoint()
         {
             return exitPoint.position;
@@ -61,7 +53,7 @@ namespace Vehicle
         {
             return body.velocity.magnitude;
         }
-
+        
         private void Awake()
         {
             body.centerOfMass = new Vector3(0f, -0.3f, 0f);
@@ -69,7 +61,14 @@ namespace Vehicle
 
         private void FixedUpdate()
         {
-            if (!playerInVehicle) return;
+            if (!playerInVehicle)
+            {
+                frontRightWheel.brakeTorque = breakingForce;
+                frontLeftWheel.brakeTorque = breakingForce;
+                backRightWheel.brakeTorque = breakingForce;
+                backLeftWheel.brakeTorque = breakingForce;
+                return;
+            }
 
             float horizontal = input.Horizontal;
             float vertical = input.Vertical;
@@ -95,8 +94,6 @@ namespace Vehicle
             UpdateWheel(frontRightWheel, frontRightWheelTransform);
             UpdateWheel(backLeftWheel, backLeftWheelTransform);
             UpdateWheel(backRightWheel, backRightWheelTransform);
-
-            CollideWithEnemy();
         }
 
         private void UpdateWheel(WheelCollider wheelCollider, Transform wheelTransform)
@@ -106,21 +103,12 @@ namespace Vehicle
             wheelTransform.rotation = rotation;
         }
 
-        private void CollideWithEnemy()
+        private void OnTriggerEnter(Collider other)
         {
-            var results = new Collider[5];
-            var bounds = frontCollider.bounds;
-            var size = Physics.OverlapBoxNonAlloc(bounds.center, bounds.extents, results,
-                frontCollider.transform.rotation, LayerMask.GetMask("Enemy"));
-
-            for (int i = 0; i < size; i++)
+            if (other.CompareTag("Enemy"))
             {
-                EnemyController enemyController = results[i].GetComponent<EnemyController>();
-
-                if (enemyController)
-                {
-                    enemyController.TakeShot();
-                }
+                var enemy = other.GetComponent<EnemyController>();
+                enemy.TakeShot();
             }
         }
     }

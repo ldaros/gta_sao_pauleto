@@ -27,9 +27,8 @@ namespace Player
         [SerializeField] private AudioClip landSound;
         [SerializeField] private float stepRate = 0.5f;
         [SerializeField] private float sprintStepRate = 0.3f;
-
-        [SerializeField] private VehicleController vehicle;
-
+        
+        private Collider playerCollider;
         private Rigidbody rigidBody;
         private PlayerManager playerManager;
         private AudioSource audioSource;
@@ -42,7 +41,9 @@ namespace Player
         private float stepTimer;
         private int stepCounter;
 
-        private bool insideVehicle;
+        private VehicleController closeVehicle;
+        private VehicleController currentVehicle;
+        private SkinnedMeshRenderer meshRenderer;
 
         private void Start()
         {
@@ -54,7 +55,7 @@ namespace Player
             float delta = Time.deltaTime;
 
             HandleEnterVehicle();
-            if (insideVehicle) return;
+            if (playerManager.isDriving) return;
 
             CheckGroundStatus(delta);
             ApplyGroundDrag();
@@ -67,23 +68,47 @@ namespace Player
 
         private void FixedUpdate()
         {
+            if (playerManager.isDriving)
+            {
+                MoveWithVehicle();
+                return;
+            }
+
             MovePlayer();
             LimitHorizontalVelocity();
         }
 
+        private void MoveWithVehicle()
+        {
+            rigidBody.MovePosition(closeVehicle.transform.position);
+            rigidBody.MoveRotation(closeVehicle.transform.rotation);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Vehicle"))
+            {
+                closeVehicle = other.GetComponent<VehicleController>();
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Vehicle") && !playerManager.isDriving)
+            {
+                closeVehicle = null;
+            }
+        }
+
         private void HandleEnterVehicle()
         {
-            var postion = transform.position;
-            var vehiclePosition = vehicle.transform.position;
-            var distance = Vector3.Distance(postion, vehiclePosition);
-            
             if (inputHandler.EnterVehicle)
             {
-                if (insideVehicle)
+                if (playerManager.isDriving)
                 {
                     ExitVehicle();
                 }
-                else if (distance < 2f)
+                else if (closeVehicle != null)
                 {
                     EnterVehicle();
                 }
@@ -92,41 +117,42 @@ namespace Player
 
         private void EnterVehicle()
         {
-            insideVehicle = true;
+            currentVehicle = closeVehicle;
             ToggleVisibility(false);
-            FollowVehicle();
-            vehicle.SetPlayerInVehicle(true);
+            transform.parent = currentVehicle.transform;
+            currentVehicle.SetPlayerInVehicle(true);
+            playerManager.isDriving = true;
         }
 
         private void ExitVehicle()
         {
-            insideVehicle = false;
+            playerManager.isDriving = false;
             ToggleVisibility(true);
-            vehicle.SetPlayerInVehicle(false);
+            currentVehicle.SetPlayerInVehicle(false);
             var playerPosition = transform;
             playerPosition.parent = null;
+            var exitPoint = currentVehicle.GetExitPoint();
 
-            var vehicleTransform = vehicle.transform;
-            var vehiclePosition = vehicleTransform.position;
-            playerPosition.position = vehicle.GetExitPoint();
+            if (Physics.Raycast(exitPoint, Vector3.down,
+                    out var hit, 1f, groundMask))
+            {
+                playerPosition.position = exitPoint;
+            }
+            else
+            {
+                playerPosition.position = currentVehicle.transform.position;
+            }
 
             transform.rotation = Quaternion.Euler(0, 0, 0);
+            currentVehicle = null;
         }
 
         private void ToggleVisibility(bool visible)
         {
             rigidBody.isKinematic = !visible;
-            GetComponent<Collider>().enabled = visible;
-            GetComponentInChildren<SkinnedMeshRenderer>().enabled = visible;
-        }
-
-
-        private void FollowVehicle()
-        {
-            var playerTransform = transform;
-            playerTransform.parent = vehicle.transform;
-            playerTransform.localPosition = new Vector3(0, 0, 0);
-            transform.localRotation = Quaternion.Euler(0, 0, 0);
+            playerCollider.enabled = visible;
+            meshRenderer.enabled = visible;
+            animatorHandler.SetAnimatorState(visible);
         }
 
         private void InitializeComponents()
@@ -139,6 +165,9 @@ namespace Player
             audioSource = playerManager.GetAudioSource();
             animatorHandler = playerManager.GetAnimatorHandler();
             cameraHandler = playerManager.GetCameraHandler();
+
+            playerCollider = GetComponent<CapsuleCollider>();
+            meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
             ConfigureRagdoll(false);
         }
@@ -231,6 +260,8 @@ namespace Player
 
         private void LimitHorizontalVelocity()
         {
+            if (playerManager.isDead) return;
+
             var velocity = rigidBody.velocity;
             Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
             float maxSpeed = GetCurrentMaxSpeed();

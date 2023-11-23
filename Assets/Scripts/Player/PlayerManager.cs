@@ -6,15 +6,17 @@ namespace Player
 {
     public class PlayerManager : MonoBehaviour
     {
-        [Header("Flags")] public bool isInteracting;
-        [FormerlySerializedAs("IsDead")] public bool isDead;
-        [FormerlySerializedAs("IsGrounded")] public bool isGrounded;
-        [FormerlySerializedAs("IsSprinting")] public bool isSprinting;
-        [FormerlySerializedAs("IsAiming")] public bool isAiming;
-        [FormerlySerializedAs("IsRagdoll")] public bool isRagdoll;
-        [FormerlySerializedAs("CanJump")] public bool canJump;
-        [FormerlySerializedAs("CanShoot")] public bool canShoot;
-        [FormerlySerializedAs("CanAttack")] public bool canAttack;
+        [Header("Flags")] 
+        public bool isInteracting;
+        public bool isDead;
+        public bool isGrounded;
+        public bool isSprinting;
+        public bool isAiming;
+        public bool isRagdoll;
+        public bool isDriving;
+        public bool canJump;
+        public bool canShoot;
+        public bool canAttack;
 
         private PlayerInput playerInput;
         private PlayerCamera cameraHandler;
