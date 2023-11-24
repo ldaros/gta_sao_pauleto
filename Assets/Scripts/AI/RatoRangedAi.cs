@@ -121,6 +121,7 @@ public class RatoRangedAi : MonoBehaviour
     }
     public void TakeShot()
     {
+        Debug.Log("Ai, tomei um tiro!");
         if (!isDie)
         {
             isDie = true;

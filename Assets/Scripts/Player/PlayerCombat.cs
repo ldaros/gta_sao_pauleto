@@ -24,7 +24,9 @@ namespace Player
         [SerializeField] private AudioClip reloadSound;
         [SerializeField] private AudioClip ricochetSound;
 
-        [Header("Layers")][SerializeField] private LayerMask enemyLayer;
+        [Header("Layers")]
+        [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private LayerMask rangedEnemyLayer;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private LayerMask objectLayer;
 
@@ -92,7 +94,14 @@ namespace Player
             if ((enemyLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
             {
                 EnemyController enemy = hit.collider.GetComponent<EnemyController>();
-                Debug.Log("Tomei bala - rato normal");
+                if (enemy != null)
+                    enemy.TakeShot();
+                return;
+            }
+            if ((rangedEnemyLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
+            {
+                Debug.Log("Ranged enemy hit!");
+                var enemy = hit.collider.GetComponent<RatoRangedAi>();
                 if (enemy != null)
                     enemy.TakeShot();
                 return;
