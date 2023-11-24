@@ -14,6 +14,7 @@ namespace Player
         private BoxCollider attackCollider;
 
         [SerializeField] private float pushForce = 10f;
+        [SerializeField] private float pushForceVehicle = 1000f;
         [SerializeField] private float pushForceUp = 5f;
         [SerializeField] private float cooldown = 1f;
         [SerializeField] private float shootingCooldown = 1f;
@@ -29,6 +30,7 @@ namespace Player
         [SerializeField] private LayerMask rangedEnemyLayer;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private LayerMask objectLayer;
+        [SerializeField] private LayerMask vehicleLayer;
 
         [SerializeField] private GameObject weaponObject;
         [SerializeField] private GameObject bulletHolePrefab;
@@ -147,6 +149,7 @@ namespace Player
 
             ProcessAttackHits(enemyLayer, TryAttackEnemy);
             ProcessAttackHits(objectLayer, TryAttackObject);
+            ProcessAttackHits(vehicleLayer, TryAttackVehicle);
         }
 
         private void ProcessAttackHits(LayerMask layer, Action<Collider> action)
@@ -180,6 +183,17 @@ namespace Player
             if (objectRigidbody)
             {
                 ApplyForceToRigidbody(objectRigidbody, pushForce, 0);
+                PlayRandomSound(hitSounds);
+            }
+        }
+        
+        private void TryAttackVehicle(Collider hitCollider)
+        {
+            Rigidbody objectRigidbody = hitCollider.GetComponent<Rigidbody>();
+
+            if (objectRigidbody)
+            {
+                ApplyForceToRigidbody(objectRigidbody, pushForceVehicle, 0);
                 PlayRandomSound(hitSounds);
             }
         }
