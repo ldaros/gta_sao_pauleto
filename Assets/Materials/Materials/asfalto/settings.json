@@ -1,0 +1,22 @@
+{
+  "prompt_text": "a realistic wet asphalt with imperfection on the surface cover with small black pebbles",
+  "patch": {
+    "ext": "png",
+    "dtype": "uint8",
+    "width": 512,
+    "height": 512,
+    "url": "https://static-dev.withpoly.com/v3/textures/patches/96e92b3f-38b0-4afe-8612-2e2325ccaca7.png",
+    "patch_id": "C3i5nbLnfu"
+  },
+  "seamless_prompt_text": "a realistic close up of dark cracked asphalt with imperfection on the surface cover with small black pebbles",
+  "upscale_prompt_text": "a realistic close up of dark cracked asphalt with imperfection on the surface cover with small black pebbles",
+  "upscale_resolution": 2048,
+  "is_seamless": false,
+  "pbr_mode": "general",
+  "pbr_generate_color": true,
+  "pbr_generate_normal": true,
+  "pbr_generate_height": true,
+  "pbr_generate_ao": false,
+  "pbr_generate_roughness": true,
+  "pbr_generate_metallic": false
+}
