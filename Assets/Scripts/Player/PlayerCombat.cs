@@ -9,7 +9,8 @@ namespace Player
 {
     public class PlayerCombat : MonoBehaviour
     {
-        [Header("Attack Settings")] [SerializeField]
+        [Header("Attack Settings")]
+        [SerializeField]
         private BoxCollider attackCollider;
 
         [SerializeField] private float pushForce = 10f;
@@ -17,13 +18,15 @@ namespace Player
         [SerializeField] private float cooldown = 1f;
         [SerializeField] private float shootingCooldown = 1f;
 
-        [Header("Sound")] [SerializeField] private AudioClip[] attackSounds;
+        [Header("Sound")][SerializeField] private AudioClip[] attackSounds;
         [SerializeField] private AudioClip[] hitSounds;
         [SerializeField] private AudioClip shootingSound;
         [SerializeField] private AudioClip reloadSound;
         [SerializeField] private AudioClip ricochetSound;
 
-        [Header("Layers")] [SerializeField] private LayerMask enemyLayer;
+        [Header("Layers")]
+        [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private LayerMask rangedEnemyLayer;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private LayerMask objectLayer;
 
@@ -91,10 +94,18 @@ namespace Player
             if ((enemyLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
             {
                 EnemyController enemy = hit.collider.GetComponent<EnemyController>();
-                enemy.TakeShot();
+                if (enemy != null)
+                    enemy.TakeShot();
                 return;
             }
-
+            if ((rangedEnemyLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
+            {
+                Debug.Log("Ranged enemy hit!");
+                var enemy = hit.collider.GetComponent<RatoRangedAi>();
+                if (enemy != null)
+                    enemy.TakeShot();
+                return;
+            }
             audioSource.PlayOneShot(ricochetSound);
             if ((objectLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
             {

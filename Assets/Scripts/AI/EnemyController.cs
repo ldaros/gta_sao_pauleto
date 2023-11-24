@@ -37,6 +37,11 @@ namespace AI
         [SerializeField] private MeshRenderer mesh;
         [SerializeField] private GameObject icon;
 
+        [SerializeField] private bool IsRanged;
+        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private float bulletSpeed = 20.0f;
+
         public bool PlayerInSight { get; private set; }
         public bool PlayerInAttackRange { get; private set; }
         public bool IsDead { get; private set; }
@@ -78,10 +83,24 @@ namespace AI
 
             if (!PlayerInSight && !PlayerInAttackRange) Patrolling(position);
             if (PlayerInSight && !PlayerInAttackRange) PursuePlayer();
-            if (PlayerInSight && PlayerInAttackRange) AttackPlayer();
+            if (PlayerInSight && PlayerInAttackRange && !IsRanged) AttackPlayer();
+            if (PlayerInSight && PlayerInAttackRange && IsRanged)
+            {
+                FaceTarget();
+                AttackPlayerRanged();
+            }
+
 
             HandleFootsteps(deltaTime);
             UpdateAnimatorValues(deltaTime);
+        }
+        
+        private void FaceTarget()
+        {
+            Vector3 direction = (player.transform.position - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                lookRotation, Time.deltaTime * 5f);
         }
 
         private void Patrolling(Vector3 position)
@@ -191,6 +210,18 @@ namespace AI
             }
         }
 
+        private void AttackPlayerRanged()
+        {
+            if (CanAttack && PlayerIsAlive())
+            {
+                audioSource.PlayOneShot(attackSound);
+                animationHandler.PlayTargetAnimation("Bite", true);
+                Shoot(player.transform.position);
+                CanAttack = false;
+                StartCoroutine(AttackCooldownTimer());
+            }
+        }
+
         private IEnumerator AttackCooldownTimer()
         {
             yield return new WaitForSeconds(attackCooldown);
@@ -252,6 +283,28 @@ namespace AI
             IsRagdoll = true;
             navMeshAgent.enabled = false;
             rigidbody.isKinematic = false;
+        }
+
+        private void Shoot(Vector3 playerPosition)
+        {
+            if (bulletPrefab != null && firePoint != null)
+            {
+                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+                Rigidbody rb = bullet.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    Vector3 shootingDirection = CalculateShootingDirection(playerPosition);
+                    rb.velocity = shootingDirection * bulletSpeed;
+                }
+            }
+        }
+
+        private Vector3 CalculateShootingDirection(Vector3 playerPosition)
+        {
+            Vector3 directionToPlayer = playerPosition - firePoint.position;
+            directionToPlayer.y += 1.0f;
+            return directionToPlayer.normalized;
         }
 
         private void OnDrawGizmosSelected()

@@ -53,7 +53,7 @@ namespace Vehicle
         {
             return body.velocity.magnitude;
         }
-        
+
         private void Awake()
         {
             body.centerOfMass = new Vector3(0f, -0.3f, 0f);
