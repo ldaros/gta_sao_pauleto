@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils
 {
     public static class ReflectionUtils
     {

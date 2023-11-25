@@ -1,8 +1,7 @@
-using Animation;
+using GTASP.Animation;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerManager : MonoBehaviour
     {

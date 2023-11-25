@@ -1,11 +1,13 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using UnityEngine.PostProcessing;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Attributes;
+using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils
 {
     public static class EditorGUIHelper
     {

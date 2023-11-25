@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Animation
+namespace GTASP.Animation
 {
     public class LockRotation : MonoBehaviour
     {

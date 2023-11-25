@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerInput : MonoBehaviour
     {

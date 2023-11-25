@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UI
+namespace GTASP.UI
 {
     public class MinimapCamera : MonoBehaviour
     {

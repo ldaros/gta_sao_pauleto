@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEngine;
+
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime
 {
     public class PostProcessingContext
     {

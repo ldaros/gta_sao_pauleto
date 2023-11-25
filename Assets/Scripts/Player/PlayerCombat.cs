@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using AI;
-using Animation;
+using GTASP.AI;
+using GTASP.Animation;
+using GTASP.Utils;
 using UnityEngine;
-using Utils;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerCombat : MonoBehaviour
     {

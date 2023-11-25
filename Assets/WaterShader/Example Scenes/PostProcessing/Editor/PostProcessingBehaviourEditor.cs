@@ -1,11 +1,13 @@
 using System;
 using System.Linq.Expressions;
-using UnityEngine.PostProcessing;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
+using UnityEditor;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor
 {
     [CustomEditor(typeof(PostProcessingBehaviour))]
-    public class PostProcessingBehaviourEditor : Editor
+    public class PostProcessingBehaviourEditor : UnityEditor.Editor
     {
         SerializedProperty m_Profile;
 

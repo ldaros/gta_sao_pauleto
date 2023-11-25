@@ -1,6 +1,7 @@
 using System;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class ScreenSpaceReflectionModel : PostProcessingModel

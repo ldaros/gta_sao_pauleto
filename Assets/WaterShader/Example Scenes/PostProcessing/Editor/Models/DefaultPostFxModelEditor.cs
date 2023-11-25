@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using UnityEditor;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Models
 {
     public class DefaultPostFxModelEditor : PostProcessingModelEditor
     {

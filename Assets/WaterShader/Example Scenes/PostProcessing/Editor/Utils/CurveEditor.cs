@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils
 {
     public sealed class CurveEditor
     {

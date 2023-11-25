@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace CTI {
+namespace GTASP.Vegetation.Conifers.Render_Pipeline_Support.Built_in_RP.CTI_Runtime_Components.Scripts {
 
 	[RequireComponent (typeof (WindZone))]
 	public class CTI_CustomWind : MonoBehaviour {

@@ -1,10 +1,13 @@
-using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Attributes;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.PropertyDrawers;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Models
 {
     using Settings = ColorGradingModel.Settings;
     using Tonemapper = ColorGradingModel.Tonemapper;

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Animation
+namespace GTASP.Animation
 {
     public class AnimatorHandler : MonoBehaviour
     {

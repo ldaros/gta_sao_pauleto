@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerOutOfBounds : MonoBehaviour
     {

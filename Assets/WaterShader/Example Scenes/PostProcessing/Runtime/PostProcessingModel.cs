@@ -1,6 +1,8 @@
 using System;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Attributes;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime
 {
     [Serializable]
     public abstract class PostProcessingModel

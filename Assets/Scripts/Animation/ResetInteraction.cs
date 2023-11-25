@@ -1,13 +1,14 @@
 using UnityEngine;
 
-namespace Animation
+namespace GTASP.Animation
 {
     public class ResetInteraction : StateMachineBehaviour
     {
-        // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-        override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
+
+        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            animator.SetBool("isInteracting", false);
+            animator.SetBool(IsInteracting, false);
         }
     }
 }

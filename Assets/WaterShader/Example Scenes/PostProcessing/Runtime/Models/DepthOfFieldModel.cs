@@ -1,6 +1,7 @@
 using System;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class DepthOfFieldModel : PostProcessingModel
@@ -16,7 +17,7 @@ namespace UnityEngine.PostProcessing
         [Serializable]
         public struct Settings
         {
-            [Min(0.1f), Tooltip("Distance to the point of focus.")]
+            [Attributes.Min(0.1f), Tooltip("Distance to the point of focus.")]
             public float focusDistance;
 
             [Range(0.05f, 32f), Tooltip("Ratio of aperture (known as f-stop or f-number). The smaller the value is, the shallower the depth of field is.")]

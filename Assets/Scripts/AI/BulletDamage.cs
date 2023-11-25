@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using Player;
-using AI;
+﻿using GTASP.Player;
+using UnityEngine;
 
-namespace AI
+namespace GTASP.AI
 {
     public class BulletDamage : MonoBehaviour
     {
@@ -19,20 +18,18 @@ namespace AI
             if (other.CompareTag("Player"))
             {
                 var playerHealth = other.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(damage);
-                    used = true;
-                }
+                if (playerHealth == null) return;
+                
+                playerHealth.TakeDamage(damage);
+                used = true;
             }
             else if (other.CompareTag("Enemy"))
             {
                 var enemy = other.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    enemy.TakeHit();
-                    used = true;
-                }
+                if (enemy == null) return;
+                
+                enemy.TakeHit();
+                used = true;
             }
         }
     }

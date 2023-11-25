@@ -1,8 +1,8 @@
-using AI;
+using GTASP.AI;
+using GTASP.Player;
 using UnityEngine;
-using Player;
 
-namespace Vehicle
+namespace GTASP.Vehicle
 {
     public class VehicleController : MonoBehaviour
     {

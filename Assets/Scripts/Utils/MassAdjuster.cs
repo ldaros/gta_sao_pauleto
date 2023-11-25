@@ -1,26 +1,29 @@
 using UnityEngine;
 
-public class MassAdjuster : MonoBehaviour
+namespace GTASP.Utils
 {
-    private Rigidbody rb;
-    public float massChangeStep = 1f;
-    private float minMass = 1f;
-    private float maxMass = 100f;
-
-    void Start()
+    public class MassAdjuster : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody>();
-    }
+        private Rigidbody rb;
+        public float massChangeStep = 1f;
+        private float minMass = 1f;
+        private float maxMass = 100f;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
+        void Start()
         {
-            rb.mass = Mathf.Min(rb.mass + massChangeStep, maxMass);
+            rb = GetComponent<Rigidbody>();
         }
-        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+
+        void Update()
         {
-            rb.mass = Mathf.Max(rb.mass - massChangeStep, minMass);
+            if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
+            {
+                rb.mass = Mathf.Min(rb.mass + massChangeStep, maxMass);
+            }
+            if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                rb.mass = Mathf.Max(rb.mass - massChangeStep, minMass);
+            }
         }
     }
 }

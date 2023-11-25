@@ -1,6 +1,9 @@
 using System;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Attributes;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class ColorGradingModel : PostProcessingModel

@@ -1,6 +1,7 @@
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime
 {
     public abstract class PostProcessingComponentBase
     {

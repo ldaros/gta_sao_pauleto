@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Utils
+namespace GTASP.Utils
 {
     public class DestroyAfterTime : MonoBehaviour
     {

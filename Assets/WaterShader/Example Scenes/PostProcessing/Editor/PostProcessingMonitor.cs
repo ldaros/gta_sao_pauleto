@@ -1,9 +1,10 @@
 using System;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
 using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor
 {
-    using MonitorSettings = UnityEngine.PostProcessing.PostProcessingProfile.MonitorSettings;
+    using MonitorSettings = PostProcessingProfile.MonitorSettings;
 
     public abstract class PostProcessingMonitor : IDisposable
     {

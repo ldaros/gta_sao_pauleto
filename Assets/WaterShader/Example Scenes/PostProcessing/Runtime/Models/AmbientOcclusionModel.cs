@@ -1,6 +1,7 @@
 using System;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class AmbientOcclusionModel : PostProcessingModel
@@ -19,7 +20,7 @@ namespace UnityEngine.PostProcessing
             [Range(0, 4), Tooltip("Degree of darkness produced by the effect.")]
             public float intensity;
 
-            [Min(1e-4f), Tooltip("Radius of sample points, which affects extent of darkened areas.")]
+            [Attributes.Min(1e-4f), Tooltip("Radius of sample points, which affects extent of darkened areas.")]
             public float radius;
 
             [Tooltip("Number of sample points, which affects quality and performance.")]

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Vehicle
+namespace GTASP.Vehicle
 {
     public class EngineSound : MonoBehaviour
     {

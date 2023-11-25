@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils
 {
-    using UnityObject = Object;
-
     public sealed class MaterialFactory : IDisposable
     {
         Dictionary<string, Material> m_Materials;

@@ -1,6 +1,8 @@
-using UnityEngine.PostProcessing;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Attributes;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using UnityEditor;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Models
 {
     using Settings = GrainModel.Settings;
 

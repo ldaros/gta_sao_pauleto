@@ -1,6 +1,9 @@
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Components
 {
     using DebugMode = BuiltinDebugViewsModel.Mode;
 

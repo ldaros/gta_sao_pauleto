@@ -1,9 +1,11 @@
-using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Linq.Expressions;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
+using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor
 {
     public class PostProcessingModelEditor
     {

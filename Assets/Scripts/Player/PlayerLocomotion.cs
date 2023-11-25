@@ -1,8 +1,8 @@
-using Animation;
+using GTASP.Animation;
+using GTASP.Vehicle;
 using UnityEngine;
-using Vehicle;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerLocomotion : MonoBehaviour
     {

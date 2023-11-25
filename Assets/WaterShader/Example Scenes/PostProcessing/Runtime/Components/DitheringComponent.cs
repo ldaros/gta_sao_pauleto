@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using UnityEngine;
+
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Components
 {
     public sealed class DitheringComponent : PostProcessingComponentRenderTexture<DitheringModel>
     {

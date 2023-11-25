@@ -1,7 +1,7 @@
+using GTASP.Utils;
 using UnityEngine;
-using Utils;
 
-namespace Environment
+namespace GTASP.Environment
 {
     public class SpawnGibs : MonoBehaviour
     {

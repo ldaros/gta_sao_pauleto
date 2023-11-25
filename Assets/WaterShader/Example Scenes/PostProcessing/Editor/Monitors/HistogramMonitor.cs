@@ -1,8 +1,11 @@
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Monitors
 {
     using HistogramMode = PostProcessingProfile.MonitorSettings.HistogramMode;
 

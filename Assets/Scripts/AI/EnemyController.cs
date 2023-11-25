@@ -1,12 +1,12 @@
 using System.Collections;
-using Animation;
-using Environment;
-using Player;
+using GTASP.Animation;
+using GTASP.Environment;
+using GTASP.Player;
+using GTASP.Utils;
 using UnityEngine;
 using UnityEngine.AI;
-using Utils;
 
-namespace AI
+namespace GTASP.AI
 {
     public class EnemyController : MonoBehaviour
     {
@@ -94,7 +94,7 @@ namespace AI
             HandleFootsteps(deltaTime);
             UpdateAnimatorValues(deltaTime);
         }
-        
+
         private void FaceTarget()
         {
             Vector3 direction = (player.transform.position - transform.position).normalized;

@@ -1,6 +1,9 @@
 using System;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Components
 {
     public sealed class TaaComponent : PostProcessingComponentRenderTexture<AntialiasingModel>
     {

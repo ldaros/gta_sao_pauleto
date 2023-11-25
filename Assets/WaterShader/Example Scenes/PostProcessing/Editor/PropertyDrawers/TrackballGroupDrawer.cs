@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Reflection;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Attributes;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Components;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(TrackballGroupAttribute))]
     sealed class TrackballGroupDrawer : PropertyDrawer

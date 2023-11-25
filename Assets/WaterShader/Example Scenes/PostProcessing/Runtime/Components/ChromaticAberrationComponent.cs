@@ -1,4 +1,8 @@
-namespace UnityEngine.PostProcessing
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEngine;
+
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Components
 {
     public sealed class ChromaticAberrationComponent : PostProcessingComponentRenderTexture<ChromaticAberrationModel>
     {

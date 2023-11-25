@@ -1,15 +1,21 @@
-using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Attributes;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Monitors;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Models;
+using GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils;
+using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor
 {
     //[CanEditMultipleObjects]
     [CustomEditor(typeof(PostProcessingProfile))]
-    public class PostProcessingInspector : Editor
+    public class PostProcessingInspector : UnityEditor.Editor
     {
         static GUIContent s_PreviewTitle = new GUIContent("Monitors");
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Attributes
 {
     public class PostProcessingModelEditorAttribute : Attribute
     {

@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
-public class Lighthouse : MonoBehaviour
+namespace GTASP.WaterShader.Example_Scenes.Environment.Scripts
 {
-    Transform tr;
-
-    void Awake()
+    public class Lighthouse : MonoBehaviour
     {
-        tr = transform;
-    }
+        Transform tr;
 
-    void LateUpdate()
-    {
-        tr.Rotate(Vector3.up, Time.deltaTime * 40);
+        void Awake()
+        {
+            tr = transform;
+        }
+
+        void LateUpdate()
+        {
+            tr.Rotate(Vector3.up, Time.deltaTime * 40);
+        }
     }
 }

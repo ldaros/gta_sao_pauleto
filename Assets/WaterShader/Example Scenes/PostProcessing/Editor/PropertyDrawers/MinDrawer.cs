@@ -1,14 +1,15 @@
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.PostProcessing;
+using MinAttribute = GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Attributes.MinAttribute;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.PropertyDrawers
 {
-    [CustomPropertyDrawer(typeof(UnityEngine.PostProcessing.MinAttribute))]
+    [CustomPropertyDrawer(typeof(MinAttribute))]
     sealed class MinDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            UnityEngine.PostProcessing.MinAttribute attribute = (UnityEngine.PostProcessing.MinAttribute)base.attribute;
+            MinAttribute attribute = (MinAttribute)base.attribute;
 
             if (property.propertyType == SerializedPropertyType.Integer)
             {

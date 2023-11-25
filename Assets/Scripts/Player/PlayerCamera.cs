@@ -2,7 +2,7 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Player
+namespace GTASP.Player
 {
     public class PlayerCamera : MonoBehaviour
     {

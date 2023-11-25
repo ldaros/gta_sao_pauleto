@@ -1,4 +1,6 @@
-namespace UnityEngine.PostProcessing
+using UnityEngine;
+
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils
 {
     using UnityObject = Object;
 

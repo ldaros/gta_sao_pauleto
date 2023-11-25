@@ -1,6 +1,7 @@
 using System;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Runtime.Utils
 {
     // Small wrapper on top of AnimationCurve to handle zero-key curves and keyframe looping
 

@@ -1,6 +1,7 @@
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor.PostProcessing
+namespace GTASP.WaterShader.Example_Scenes.PostProcessing.Editor.Utils
 {
     using UnityObject = Object;
 
