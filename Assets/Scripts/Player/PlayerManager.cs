@@ -5,11 +5,12 @@ namespace GTASP.Player
 {
     public class PlayerManager : MonoBehaviour
     {
-        [Header("Flags")] 
+        [Header("Flags")]
         public bool isInteracting;
         public bool isDead;
         public bool isGrounded;
         public bool isSprinting;
+        public bool isWalking;
         public bool isAiming;
         public bool isRagdoll;
         public bool isDriving;

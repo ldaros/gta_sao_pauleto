@@ -39,6 +39,21 @@ namespace GTASP.Animation
             Animator.SetBool(IsAimingHash, isAiming);
         }
 
+        public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting,
+            bool isWalking,
+            bool isAiming,
+            float delta)
+        {
+            float adjustedVerticalMovement = AdjustForSprinting(verticalMovement, horizontalMovement, isSprinting);
+            if (isWalking)
+            {
+                adjustedVerticalMovement = 0.5f;
+            }
+            Animator.SetFloat(VerticalHash, adjustedVerticalMovement, animationDampTime, delta);
+            Animator.SetFloat(HorizontalHash, horizontalMovement, animationDampTime, delta);
+            Animator.SetBool(IsAimingHash, isAiming);
+        }
+
         private float AdjustForSprinting(float verticalMovement, float horizontalMovement, bool isSprinting)
         {
             bool isMoving = verticalMovement != 0 || horizontalMovement != 0;

@@ -24,6 +24,9 @@ namespace GTASP.Vehicle
 
         [SerializeField] private Transform exitPoint;
         [SerializeField] private EngineSound engineSound;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip crashSound;
+
 
         private bool playerInVehicle;
         private float currentAcceleration;
@@ -109,6 +112,15 @@ namespace GTASP.Vehicle
             {
                 var enemy = other.GetComponent<EnemyController>();
                 enemy.TakeShot();
+            }
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (playerInVehicle && (other.relativeVelocity.magnitude > 7f))
+            {
+                audioSource.pitch = 1f;
+                audioSource.PlayOneShot(crashSound);
             }
         }
     }

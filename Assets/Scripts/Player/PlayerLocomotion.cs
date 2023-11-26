@@ -1,4 +1,5 @@
 using GTASP.Animation;
+using GTASP.Environment;
 using GTASP.Vehicle;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace GTASP.Player
     {
         [Header("Movement")] [SerializeField] private float movementSpeed = 7f;
         [SerializeField] private float sprintSpeed = 10f;
+        [SerializeField] private float walkSpeed = 5f;
         [SerializeField] private float groundDrag = 5f;
         [SerializeField] private Transform orientation;
         [SerializeField] private GameObject rootBone;
@@ -27,7 +29,7 @@ namespace GTASP.Player
         [SerializeField] private AudioClip landSound;
         [SerializeField] private float stepRate = 0.5f;
         [SerializeField] private float sprintStepRate = 0.3f;
-        
+
         private Collider playerCollider;
         private Rigidbody rigidBody;
         private PlayerManager playerManager;
@@ -45,6 +47,8 @@ namespace GTASP.Player
         private VehicleController currentVehicle;
         private SkinnedMeshRenderer meshRenderer;
 
+        [SerializeField] private RadioStreamer radioStreamer;
+
         private void Start()
         {
             InitializeComponents();
@@ -61,9 +65,15 @@ namespace GTASP.Player
             ApplyGroundDrag();
             HandleAiming();
             HandleSprint();
+            HandleWalk();
             HandleJump();
             UpdateAnimator(delta);
             HandleFootstepSounds(delta);
+        }
+
+        private void HandleWalk()
+        {
+            playerManager.isWalking = inputHandler.Walk;
         }
 
         private void FixedUpdate()
@@ -122,6 +132,8 @@ namespace GTASP.Player
             transform.parent = currentVehicle.transform;
             currentVehicle.SetPlayerInVehicle(true);
             playerManager.isDriving = true;
+            
+            radioStreamer.EnableRadio();
         }
 
         private void ExitVehicle()
@@ -145,6 +157,8 @@ namespace GTASP.Player
 
             transform.rotation = Quaternion.Euler(0, 0, 0);
             currentVehicle = null;
+            
+            radioStreamer.DisableRadio();
         }
 
         private void ToggleVisibility(bool visible)
@@ -168,7 +182,7 @@ namespace GTASP.Player
 
             playerCollider = GetComponent<CapsuleCollider>();
             meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-
+            
             ConfigureRagdoll(false);
         }
 
@@ -274,6 +288,7 @@ namespace GTASP.Player
 
         private float GetCurrentMaxSpeed()
         {
+            if (playerManager.isWalking) return walkSpeed;
             return playerManager.isSprinting ? sprintSpeed : movementSpeed;
         }
 
@@ -295,7 +310,7 @@ namespace GTASP.Player
         private void UpdateAnimator(float delta)
         {
             animatorHandler.UpdateAnimatorValues(inputHandler.MoveAmount, 0,
-                playerManager.isSprinting, playerManager.isAiming, delta);
+                playerManager.isSprinting, playerManager.isWalking, playerManager.isAiming, delta);
         }
 
         private void PlayFootstepSound()

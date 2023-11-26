@@ -7,6 +7,7 @@ namespace GTASP.Player
         [Header("Keybindings")]
         [SerializeField] private KeyCode jumpKey = KeyCode.Space;
         [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
+        [SerializeField] private KeyCode walkKey = KeyCode.LeftControl;
         [SerializeField] private KeyCode attackKey = KeyCode.Q;
         [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
         [SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
@@ -18,6 +19,7 @@ namespace GTASP.Player
         public float Vertical { get; private set; }
         public float MoveAmount { get; private set; }
         public bool Sprint { get; private set; }
+        public bool Walk { get; private set; }
         public bool Jump { get; private set; }
         public bool Attack { get; private set; }
         public bool Aim { get; private set; }
@@ -44,6 +46,7 @@ namespace GTASP.Player
             Jump = Input.GetKeyDown(jumpKey);
             Attack = Input.GetKeyDown(attackKey);
             Shoot = Input.GetKeyDown(shootKey);
+            Walk = Input.GetKey(walkKey);
             Sprint = Input.GetKey(sprintKey);
             Brake = Input.GetKey(brakeKey);
             Aim = Input.GetKey(aimKey);
