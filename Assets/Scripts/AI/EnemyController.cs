@@ -1,6 +1,7 @@
 using System.Collections;
 using GTASP.Animation;
 using GTASP.Environment;
+using GTASP.Game;
 using GTASP.Player;
 using GTASP.Utils;
 using UnityEngine;
@@ -22,7 +23,8 @@ namespace GTASP.AI
         [SerializeField] private float viewRadius = 10f;
         [SerializeField] private float attackDamage = 10f;
         [SerializeField] private float attackCooldown = 1f;
-        [SerializeField] private int gibAfter = 3;
+        [SerializeField] private float gibAfter = 30;
+        [SerializeField] private float maxHealth = 10f;
 
         [Header("Sound")]
         [SerializeField] private AudioClip deathSound;
@@ -36,8 +38,11 @@ namespace GTASP.AI
         [SerializeField] private ParticleSystem gibParticles;
         [SerializeField] private MeshRenderer mesh;
         [SerializeField] private GameObject icon;
+        [SerializeField] private int gibAmount = 5;
+        [SerializeField] private float gibSize = 1f;
 
         [SerializeField] private bool IsRanged;
+        [SerializeField] private bool IsBoss;
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private Transform firePoint;
         [SerializeField] private float bulletSpeed = 20.0f;
@@ -61,12 +66,17 @@ namespace GTASP.AI
         private PlayerHealth playerHealth;
         private AnimatorHandler animationHandler;
         private SpawnGibs spawnGibs;
-        private int hitCount;
         private Vector3 walkPoint;
+        private GameState gameState;
+
+        private float currentHealth;
 
         private void Awake()
         {
             InitializeComponents();
+            currentHealth = maxHealth;
+            if (!IsBoss)
+                gameState.RatSpawned();
         }
 
         private void Update()
@@ -149,23 +159,24 @@ namespace GTASP.AI
             animationHandler.UpdateAnimatorValues(speed, 0, false, false, delta);
         }
 
-        public void TakeHit()
+        public void TakeHit(float damage)
         {
-            hitCount++;
-            if (hitCount >= gibAfter)
+            currentHealth -= damage;
+            bloodParticles.Play();
+            audioSource.PlayOneShot(deathSound);
+
+            if (currentHealth <= gibAfter)
             {
                 Gib();
+                Die();
+                return;
             }
 
-            EnableRagdoll();
-            bloodParticles.Play();
-            Die();
-        }
-
-        public void TakeShot()
-        {
-            Gib();
-            Die();
+            if (currentHealth <= 0)
+            {
+                EnableRagdoll();
+                Die();
+            }
         }
 
         private void Gib()
@@ -174,9 +185,9 @@ namespace GTASP.AI
             IsGibbed = true;
             HideMesh();
             gibParticles.Play();
-            spawnGibs.SpawnMultipleGibs(transform.position, 5);
+            spawnGibs.SpawnMultipleGibs(transform.position, gibAmount, gibSize);
             audioSource.PlayOneShot(gibSound);
-            StartCoroutine(ObjectUtils.DestroyAfter(gameObject, 5f));
+            Destroy(gameObject, 5f);
         }
 
         private void HideMesh()
@@ -242,6 +253,7 @@ namespace GTASP.AI
             audioSource = GetComponent<AudioSource>();
             animationHandler = GetComponent<AnimatorHandler>();
             spawnGibs = GetComponent<SpawnGibs>();
+            gameState = FindObjectOfType<GameState>();
         }
 
         private void HandleOutOfBounds(Vector3 position)
@@ -272,10 +284,9 @@ namespace GTASP.AI
         private void Die()
         {
             if (IsDead) return;
-            audioSource.PlayOneShot(deathSound);
             IsDead = true;
-
             icon.SetActive(false);
+            gameState.RatKilled();
         }
 
         private void EnableRagdoll()

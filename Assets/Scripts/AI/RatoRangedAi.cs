@@ -1,3 +1,4 @@
+using GTASP.Game;
 using UnityEngine;
 
 namespace GTASP.AI
@@ -30,6 +31,7 @@ namespace GTASP.AI
                 playerTransform = player.transform;
             }
         }
+
         void Update()
         {
             if (playerTransform != null && controller != null && !isDie)
@@ -41,21 +43,20 @@ namespace GTASP.AI
 
                 if (distanceToPlayer < attackRange)
                 {
-
                     StopFollowingPlayer();
                     if (direction != Vector3.zero)
                     {
                         Quaternion lookRotation = Quaternion.LookRotation(direction);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation,
+                            Time.deltaTime * rotationSpeed);
                     }
-                    ShootAtPlayer();
 
+                    ShootAtPlayer();
                 }
                 else if (IsPlayerVisible())
                 {
                     FollowPlayer();
                 }
-
             }
         }
 
@@ -63,6 +64,7 @@ namespace GTASP.AI
         {
             controller.SimpleMove(Vector3.zero);
         }
+
         private void FollowPlayer()
         {
             Vector3 direction = playerTransform.position - transform.position;
@@ -77,6 +79,7 @@ namespace GTASP.AI
 
             controller.SimpleMove(direction * speed);
         }
+
         private void ShootAtPlayer()
         {
             shootTimer += Time.deltaTime;
@@ -87,6 +90,7 @@ namespace GTASP.AI
                 shootTimer = 0;
             }
         }
+
         private void Shoot()
         {
             if (bulletPrefab != null && firePoint != null)
@@ -108,6 +112,7 @@ namespace GTASP.AI
             directionToPlayer.y += 1.0f; // Eleva ligeiramente a direção do tiro
             return directionToPlayer.normalized;
         }
+
         private bool IsPlayerVisible()
         {
             RaycastHit hit;
@@ -117,8 +122,10 @@ namespace GTASP.AI
             {
                 return hit.collider.CompareTag("Player");
             }
+
             return false;
         }
+
         public void TakeShot()
         {
             Debug.Log("Ai, tomei um tiro!");

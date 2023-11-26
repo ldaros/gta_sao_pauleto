@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using GTASP.AI;
 using GTASP.Animation;
-using GTASP.Utils;
 using UnityEngine;
 
 namespace GTASP.Player
@@ -19,7 +18,10 @@ namespace GTASP.Player
         [SerializeField] private float cooldown = 1f;
         [SerializeField] private float shootingCooldown = 1f;
 
-        [Header("Sound")][SerializeField] private AudioClip[] attackSounds;
+        [SerializeField] private float kickDamage = 10f;
+        [SerializeField] private float shootDamage = 30f;
+
+        [Header("Sound")] [SerializeField] private AudioClip[] attackSounds;
         [SerializeField] private AudioClip[] hitSounds;
         [SerializeField] private AudioClip shootingSound;
         [SerializeField] private AudioClip reloadSound;
@@ -85,7 +87,7 @@ namespace GTASP.Player
             audioSource.PlayOneShot(shootingSound);
             playerManager.canShoot = false;
 
-            if (Physics.Raycast(ray, out var hit, 100f, enemyLayer | objectLayer | groundLayer))
+            if (Physics.Raycast(ray, out var hit, 300f, enemyLayer | objectLayer | groundLayer))
             {
                 ProcessRaycastHit(hit);
             }
@@ -97,9 +99,10 @@ namespace GTASP.Player
             {
                 EnemyController enemy = hit.collider.GetComponent<EnemyController>();
                 if (enemy != null)
-                    enemy.TakeShot();
+                    enemy.TakeHit(shootDamage);
                 return;
             }
+
             if ((rangedEnemyLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
             {
                 Debug.Log("Ranged enemy hit!");
@@ -108,6 +111,7 @@ namespace GTASP.Player
                     enemy.TakeShot();
                 return;
             }
+
             audioSource.PlayOneShot(ricochetSound);
             if ((objectLayer.value & (1 << hit.collider.gameObject.layer)) != 0)
             {
@@ -127,19 +131,15 @@ namespace GTASP.Player
         {
             Quaternion holeRotation = Quaternion.FromToRotation(Vector3.up, normal);
             GameObject bulletHole = Instantiate(bulletHolePrefab, position + (normal * .01f), holeRotation);
-
-            // Start coroutine to despawn the bullet hole after a set duration
-            StartCoroutine(ObjectUtils.DestroyAfter(bulletHole, bulletHoleDespawnTime));
+            Destroy(bulletHole, bulletHoleDespawnTime);
         }
 
         private void CreateBulletParticles(Vector3 position, Vector3 normal)
         {
             Quaternion particleRotation = Quaternion.LookRotation(normal);
-
             GameObject particles = Instantiate(bulletParticles, position, particleRotation);
-
-            // Start coroutine to despawn the bullet hole after a set duration
-            StartCoroutine(ObjectUtils.DestroyAfter(particles, 1f));
+            
+            Destroy(particles, bulletHoleDespawnTime);
         }
 
         private void PerformAttack()
@@ -170,7 +170,7 @@ namespace GTASP.Player
 
             if (enemyRigidbody && enemyController)
             {
-                enemyController.TakeHit();
+                enemyController.TakeHit(kickDamage);
                 ApplyForceToRigidbody(enemyRigidbody, pushForce, pushForceUp);
                 PlayRandomSound(attackSounds);
             }
@@ -186,7 +186,7 @@ namespace GTASP.Player
                 PlayRandomSound(hitSounds);
             }
         }
-        
+
         private void TryAttackVehicle(Collider hitCollider)
         {
             Rigidbody objectRigidbody = hitCollider.GetComponent<Rigidbody>();

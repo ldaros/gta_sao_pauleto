@@ -1,3 +1,4 @@
+using GTASP.UI;
 using UnityEngine;
 
 namespace GTASP.Player
@@ -13,7 +14,9 @@ namespace GTASP.Player
         [SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
         [SerializeField] private KeyCode enterVehicleKey = KeyCode.F;
         [SerializeField] private KeyCode brakeKey = KeyCode.Space;
-
+        [SerializeField] private KeyCode mapKey = KeyCode.M;
+        
+        [SerializeField] private WorldMap worldMap;
 
         public float Horizontal { get; private set; }
         public float Vertical { get; private set; }
@@ -51,6 +54,11 @@ namespace GTASP.Player
             Brake = Input.GetKey(brakeKey);
             Aim = Input.GetKey(aimKey);
             EnterVehicle = Input.GetKeyDown(enterVehicleKey);
+            
+            if (Input.GetKeyDown(mapKey))
+            {
+                worldMap.ToggleMap();
+            }
         }
     }
 }

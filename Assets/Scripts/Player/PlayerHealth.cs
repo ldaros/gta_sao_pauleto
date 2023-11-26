@@ -12,6 +12,7 @@ namespace GTASP.Player
         [SerializeField] private AudioClip deathSound;
         [SerializeField] private ParticleSystem bloodParticles;
         [SerializeField] private TextMeshProUGUI healthText;
+        [SerializeField] private TextMeshProUGUI gameOverText;
     
         private PlayerManager playerManager;
         private PlayerLocomotion playerLocomotion;
@@ -72,6 +73,8 @@ namespace GTASP.Player
             playerLocomotion.ToggleRagdoll();
             PlaySound(deathSound);
             Debug.Log("Player died");
+            gameOverText.gameObject.SetActive(true);
+            Invoke(nameof(ReturnToMainMenu), 5f);
         }
 
         public void Respawn()
@@ -95,6 +98,11 @@ namespace GTASP.Player
             {
                 audioSource.PlayOneShot(clip);
             }
+        }
+        
+        private void ReturnToMainMenu()
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
     }
 }

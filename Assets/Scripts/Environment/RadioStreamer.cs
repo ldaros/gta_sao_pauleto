@@ -18,18 +18,12 @@ namespace GTASP.Environment
 
         public void EnableRadio()
         {
-            StartCoroutine(EnableAfterDelay());
+            audioSource.volume = volume;
         }
 
         public void DisableRadio()
         {
             audioSource.volume = 0f;
-        }
-
-        private IEnumerator EnableAfterDelay()
-        {
-            yield return new WaitForSeconds(1.5f);
-            audioSource.volume = volume;
         }
     }
 }

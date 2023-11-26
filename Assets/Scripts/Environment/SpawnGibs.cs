@@ -1,4 +1,3 @@
-using GTASP.Utils;
 using UnityEngine;
 
 namespace GTASP.Environment
@@ -9,12 +8,13 @@ namespace GTASP.Environment
         [SerializeField] private float despawnTime = 5f; // Time in seconds after which gibs will be destroyed
         [SerializeField] private float impulseForce = 5f; // Force of the impulse applied to gibs
 
-        private void SpawnSingleGib(Vector3 position, Quaternion rotation)
+        private void SpawnSingleGib(Vector3 position, Quaternion rotation, float size = 1f)
         {
             if (gibPrefabs.Length == 0) return;
 
             int randomIndex = Random.Range(0, gibPrefabs.Length);
             GameObject gib = Instantiate(gibPrefabs[randomIndex], position, rotation);
+            gib.transform.localScale = Vector3.one * size;
 
             // Apply random impulse
             Rigidbody gibRigidbody = gib.GetComponent<Rigidbody>();
@@ -24,16 +24,15 @@ namespace GTASP.Environment
                 gibRigidbody.AddForce(randomDirection * impulseForce, ForceMode.Impulse);
             }
 
-            // Start the despawn coroutine
-            StartCoroutine(ObjectUtils.DestroyAfter(gib, despawnTime));
+            Destroy(gib, despawnTime);
         }
 
-        public void SpawnMultipleGibs(Vector3 position, int quantity)
+        public void SpawnMultipleGibs(Vector3 position, int quantity, float size = 1f)
         {
             for (int i = 0; i < quantity; i++)
             {
                 Quaternion randomRotation = Random.rotation;
-                SpawnSingleGib(position, randomRotation);
+                SpawnSingleGib(position, randomRotation, size);
             }
         }
     }

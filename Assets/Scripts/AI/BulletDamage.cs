@@ -28,7 +28,7 @@ namespace GTASP.AI
                 var enemy = other.GetComponent<EnemyController>();
                 if (enemy == null) return;
                 
-                enemy.TakeHit();
+                enemy.TakeHit(10f);
                 used = true;
             }
         }

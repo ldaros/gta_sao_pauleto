@@ -112,7 +112,7 @@ namespace GTASP.Player
 
         private void HandleEnterVehicle()
         {
-            if (inputHandler.EnterVehicle)
+            if (inputHandler.EnterVehicle && !playerManager.isAiming)
             {
                 if (playerManager.isDriving)
                 {
@@ -132,8 +132,8 @@ namespace GTASP.Player
             transform.parent = currentVehicle.transform;
             currentVehicle.SetPlayerInVehicle(true);
             playerManager.isDriving = true;
-            
-            radioStreamer.EnableRadio();
+
+            Invoke(nameof(EnableRadio), 2f);
         }
 
         private void ExitVehicle()
@@ -157,7 +157,7 @@ namespace GTASP.Player
 
             transform.rotation = Quaternion.Euler(0, 0, 0);
             currentVehicle = null;
-            
+
             radioStreamer.DisableRadio();
         }
 
@@ -182,7 +182,7 @@ namespace GTASP.Player
 
             playerCollider = GetComponent<CapsuleCollider>();
             meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-            
+
             ConfigureRagdoll(false);
         }
 
@@ -355,6 +355,12 @@ namespace GTASP.Player
         {
             Gizmos.color = Color.green;
             Gizmos.DrawRay(transform.position, Vector3.down * (playerHeight / 2 + 0.2f));
+        }
+
+        private void EnableRadio()
+        {
+            if (!playerManager.isDriving) return;
+            radioStreamer.EnableRadio();
         }
     }
 }

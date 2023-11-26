@@ -111,7 +111,7 @@ namespace GTASP.Vehicle
             if (other.CompareTag("Enemy"))
             {
                 var enemy = other.GetComponent<EnemyController>();
-                enemy.TakeShot();
+                enemy.TakeHit(30f);
             }
         }
 
