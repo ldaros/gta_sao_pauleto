@@ -1,7 +1,7 @@
-using System.Globalization;
 using GTASP.Animation;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GTASP.Player
 {
@@ -11,7 +11,7 @@ namespace GTASP.Player
         [SerializeField] private AudioClip damageSound;
         [SerializeField] private AudioClip deathSound;
         [SerializeField] private ParticleSystem bloodParticles;
-        [SerializeField] private TextMeshProUGUI healthText;
+        [SerializeField] private Image healthBar;
         [SerializeField] private TextMeshProUGUI gameOverText;
     
         private PlayerManager playerManager;
@@ -42,7 +42,7 @@ namespace GTASP.Player
 
         private void UpdateHealthDisplay()
         {
-            healthText.text = CurrentHealth.ToString(CultureInfo.InvariantCulture);
+            healthBar.fillAmount = CurrentHealth / maxHealth;
         }
 
         public void TakeDamage(float damage)
