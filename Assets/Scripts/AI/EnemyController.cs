@@ -286,7 +286,11 @@ namespace GTASP.AI
             if (IsDead) return;
             IsDead = true;
             icon.SetActive(false);
-            gameState.RatKilled();
+
+            if (!IsBoss)
+                gameState.RatKilled();
+            else
+                gameState.EndGame();
         }
 
         private void EnableRagdoll()
