@@ -3,9 +3,9 @@ using GTASP.Animation;
 using GTASP.Environment;
 using GTASP.Game;
 using GTASP.Player;
-using GTASP.Utils;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 namespace GTASP.AI
 {
@@ -17,7 +17,7 @@ namespace GTASP.AI
         [SerializeField] private float walkPointRange;
         [SerializeField] private float waitTime = 1f;
         [SerializeField] private float outOfBoundsY = -10f;
-        
+
         [SerializeField] private bool canMove = true;
         [SerializeField] private bool canPatrol = true;
 
@@ -47,8 +47,11 @@ namespace GTASP.AI
         [SerializeField] private bool IsRanged;
         [SerializeField] private bool IsBoss;
         [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private GameObject bulletPrefab2;
         [SerializeField] private Transform firePoint;
         [SerializeField] private float bulletSpeed = 20.0f;
+
+        [SerializeField] private Image healthBar;
 
         public bool PlayerInSight { get; private set; }
         public bool PlayerInAttackRange { get; private set; }
@@ -73,6 +76,7 @@ namespace GTASP.AI
         private GameState gameState;
 
         private float currentHealth;
+        private int projectilesShot;
 
         private void Awake()
         {
@@ -168,6 +172,9 @@ namespace GTASP.AI
             bloodParticles.Play();
             audioSource.PlayOneShot(deathSound);
 
+            if (healthBar != null)
+                healthBar.fillAmount = currentHealth / maxHealth;
+
             if (currentHealth <= gibAfter)
             {
                 Gib();
@@ -232,6 +239,7 @@ namespace GTASP.AI
                 animationHandler.PlayTargetAnimation("Bite", true);
                 Shoot(player.transform.position);
                 CanAttack = false;
+                projectilesShot++;
                 StartCoroutine(AttackCooldownTimer());
             }
         }
@@ -307,7 +315,14 @@ namespace GTASP.AI
         {
             if (bulletPrefab != null && firePoint != null)
             {
-                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+                GameObject prefab = bulletPrefab;
+
+                if (bulletPrefab2 != null && projectilesShot % 3 == 0)
+                {
+                    prefab = bulletPrefab2;
+                }
+
+                GameObject bullet = Instantiate(prefab, firePoint.position, firePoint.rotation);
                 Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
                 if (rb != null)
