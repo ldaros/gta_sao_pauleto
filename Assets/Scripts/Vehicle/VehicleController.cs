@@ -1,4 +1,6 @@
+using System.Collections;
 using GTASP.AI;
+using GTASP.Game;
 using GTASP.Player;
 using UnityEngine;
 
@@ -27,6 +29,9 @@ namespace GTASP.Vehicle
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip crashSound;
 
+        [SerializeField] private bool needsBattery;
+
+        private GameState gameState;
 
         private bool playerInVehicle;
         private float currentAcceleration;
@@ -60,6 +65,7 @@ namespace GTASP.Vehicle
         private void Awake()
         {
             body.centerOfMass = new Vector3(0f, -0.3f, 0f);
+            gameState = FindObjectOfType<GameState>();
         }
 
         private void FixedUpdate()
@@ -70,6 +76,12 @@ namespace GTASP.Vehicle
                 frontLeftWheel.brakeTorque = breakingForce;
                 backRightWheel.brakeTorque = breakingForce;
                 backLeftWheel.brakeTorque = breakingForce;
+                return;
+            }
+            
+            if (needsBattery && !gameState.hasCarBattery)
+            {
+                engineSound.Stall();
                 return;
             }
 

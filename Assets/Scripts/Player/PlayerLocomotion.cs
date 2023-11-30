@@ -1,5 +1,6 @@
 using GTASP.Animation;
 using GTASP.Environment;
+using GTASP.Game;
 using GTASP.Vehicle;
 using UnityEngine;
 
@@ -46,6 +47,8 @@ namespace GTASP.Player
         private VehicleController closeVehicle;
         private VehicleController currentVehicle;
         private SkinnedMeshRenderer meshRenderer;
+
+        private GameState gameState;
 
         [SerializeField] private RadioStreamer radioStreamer;
 
@@ -183,6 +186,8 @@ namespace GTASP.Player
             playerCollider = GetComponent<CapsuleCollider>();
             meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
+            gameState = FindObjectOfType<GameState>();
+
             ConfigureRagdoll(false);
         }
 
@@ -222,6 +227,7 @@ namespace GTASP.Player
         private void HandleAiming()
         {
             if (playerManager.isDead) return;
+            if (!gameState.hasRifle) return;
 
             playerManager.isAiming = inputHandler.Aim;
         }
@@ -359,7 +365,7 @@ namespace GTASP.Player
 
         private void EnableRadio()
         {
-            if (!playerManager.isDriving) return;
+            if (!playerManager.isDriving || !gameState.hasCarBattery) return;
             radioStreamer.EnableRadio();
         }
     }

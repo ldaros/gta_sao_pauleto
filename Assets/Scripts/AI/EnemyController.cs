@@ -17,6 +17,9 @@ namespace GTASP.AI
         [SerializeField] private float walkPointRange;
         [SerializeField] private float waitTime = 1f;
         [SerializeField] private float outOfBoundsY = -10f;
+        
+        [SerializeField] private bool canMove = true;
+        [SerializeField] private bool canPatrol = true;
 
         [Header("Combat")]
         [SerializeField] private float attackRange = 2f;
@@ -91,8 +94,8 @@ namespace GTASP.AI
 
             if (IsRagdoll || IsDead) return;
 
-            if (!PlayerInSight && !PlayerInAttackRange) Patrolling(position);
-            if (PlayerInSight && !PlayerInAttackRange) PursuePlayer();
+            if (!PlayerInSight && !PlayerInAttackRange && canPatrol) Patrolling(position);
+            if (PlayerInSight && !PlayerInAttackRange && canMove) PursuePlayer();
             if (PlayerInSight && PlayerInAttackRange && !IsRanged) AttackPlayer();
             if (PlayerInSight && PlayerInAttackRange && IsRanged)
             {

@@ -18,6 +18,9 @@ namespace GTASP.Game
         public event RatKilledEventHandler OnRatKilled;
         public event RatSpawnedEventHandler OnRatSpawned;
 
+        public bool hasRifle;
+        public bool hasCarBattery;
+
         private int ratsKilled;
         private int ratsSpawned;
         private bool bossSpawned;

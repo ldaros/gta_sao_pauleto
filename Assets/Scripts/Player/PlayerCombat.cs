@@ -138,7 +138,7 @@ namespace GTASP.Player
         {
             Quaternion particleRotation = Quaternion.LookRotation(normal);
             GameObject particles = Instantiate(bulletParticles, position, particleRotation);
-            
+
             Destroy(particles, bulletHoleDespawnTime);
         }
 
