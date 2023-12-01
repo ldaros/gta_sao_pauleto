@@ -17,7 +17,6 @@ namespace GTASP.AI
         [SerializeField] private float walkPointRange;
         [SerializeField] private float waitTime = 1f;
         [SerializeField] private float outOfBoundsY = -10f;
-
         [SerializeField] private bool canMove = true;
         [SerializeField] private bool canPatrol = true;
 
@@ -28,6 +27,16 @@ namespace GTASP.AI
         [SerializeField] private float attackCooldown = 1f;
         [SerializeField] private float gibAfter = 30;
         [SerializeField] private float maxHealth = 10f;
+
+        [Header("To Ranged Enemies")]
+        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private GameObject bulletPrefab2;
+        [SerializeField] private GameObject bulletPrefab3;
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private Transform firePointMeteor1;
+        [SerializeField] private Transform firePointMeteor2;
+        [SerializeField] private Transform firePointMeteor3;
+        [SerializeField] private float bulletSpeed = 20.0f;
 
         [Header("Sound")]
         [SerializeField] private AudioClip deathSound;
@@ -44,12 +53,10 @@ namespace GTASP.AI
         [SerializeField] private int gibAmount = 5;
         [SerializeField] private float gibSize = 1f;
 
+        [Header("Enemy Type")]
         [SerializeField] private bool IsRanged;
         [SerializeField] private bool IsBoss;
-        [SerializeField] private GameObject bulletPrefab;
-        [SerializeField] private GameObject bulletPrefab2;
-        [SerializeField] private Transform firePoint;
-        [SerializeField] private float bulletSpeed = 20.0f;
+
 
         [SerializeField] private Image healthBar;
 
@@ -324,12 +331,30 @@ namespace GTASP.AI
 
                 GameObject bullet = Instantiate(prefab, firePoint.position, firePoint.rotation);
                 Rigidbody rb = bullet.GetComponent<Rigidbody>();
-
                 if (rb != null)
                 {
                     Vector3 shootingDirection = CalculateShootingDirection(playerPosition);
                     rb.velocity = shootingDirection * bulletSpeed;
                 }
+
+                if (projectilesShot % 7 == 0 && bulletPrefab3 != null)
+                {
+                    FireMeteor(bulletPrefab3, firePointMeteor1);
+                    FireMeteor(bulletPrefab3, firePointMeteor2);
+                    FireMeteor(bulletPrefab3, firePointMeteor3);
+                }
+
+                projectilesShot++;
+            }
+        }
+
+        private void FireMeteor(GameObject prefab, Transform firePointMeteor)
+        {
+            GameObject meteor = Instantiate(prefab, firePointMeteor.position, firePointMeteor.rotation);
+            Rigidbody rbMeteor = meteor.GetComponent<Rigidbody>();
+            if (rbMeteor != null)
+            {
+                rbMeteor.velocity = Vector3.down * bulletSpeed;
             }
         }
 
