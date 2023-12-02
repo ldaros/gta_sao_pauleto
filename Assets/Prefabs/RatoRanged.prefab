@@ -9690,11 +9690,22 @@ MonoBehaviour:
   walkPointRange: 20
   waitTime: 1
   outOfBoundsY: -10
+  canMove: 1
+  canPatrol: 1
   attackRange: 10
   viewRadius: 20
   attackDamage: 20
   attackCooldown: 2
   gibAfter: 3
+  maxHealth: 10
+  bulletPrefab: {fileID: 4897516807650563312, guid: e815d4702912d8a4b8f74bf0c5c7c35f, type: 3}
+  bulletPrefab2: {fileID: 0}
+  bulletPrefab3: {fileID: 0}
+  firePoint: {fileID: 3866747968795595755}
+  firePointMeteor1: {fileID: 0}
+  firePointMeteor2: {fileID: 0}
+  firePointMeteor3: {fileID: 0}
+  bulletSpeed: 20
   deathSound: {fileID: 8300000, guid: 3f88a660786bb204989f39f29de0c3e7, type: 3}
   attackSound: {fileID: 8300000, guid: 3f88a660786bb204989f39f29de0c3e7, type: 3}
   footstepSound: {fileID: 8300000, guid: 48f80aea8e9e41e49a3c2cba586e0679, type: 3}
@@ -9704,10 +9715,11 @@ MonoBehaviour:
   gibParticles: {fileID: 1291287746176210172}
   mesh: {fileID: 3866747967039088825}
   icon: {fileID: 7005348901355245472}
+  gibAmount: 5
+  gibSize: 1
   IsRanged: 1
-  bulletPrefab: {fileID: 4897516807650563312, guid: e815d4702912d8a4b8f74bf0c5c7c35f, type: 3}
-  firePoint: {fileID: 3866747968795595755}
-  bulletSpeed: 20
+  IsBoss: 0
+  healthBar: {fileID: 0}
 --- !u!114 &4412594538816519839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9804,7 +9816,7 @@ AudioSource:
   m_GameObject: {fileID: 3741834439916064967}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 1cc00bff486077a49b84ac7d3f6161e4, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

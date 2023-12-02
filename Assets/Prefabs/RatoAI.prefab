@@ -9784,28 +9784,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd9561d0c6e00e439672d387db98db7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 10
-  outOfBoundsY: -10
-  enemyHeight: 0.5
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 576
   playerMask:
     serializedVersion: 2
     m_Bits: 128
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 576
+  walkPointRange: 0
+  waitTime: 1
+  outOfBoundsY: -10
+  canMove: 1
+  canPatrol: 1
+  attackRange: 2
+  viewRadius: 10
+  attackDamage: 20
+  attackCooldown: 5
+  gibAfter: 3
+  maxHealth: 10
+  bulletPrefab: {fileID: 0}
+  bulletPrefab2: {fileID: 0}
+  bulletPrefab3: {fileID: 0}
+  firePoint: {fileID: 0}
+  firePointMeteor1: {fileID: 0}
+  firePointMeteor2: {fileID: 0}
+  firePointMeteor3: {fileID: 0}
+  bulletSpeed: 20
   deathSound: {fileID: 8300000, guid: 3f88a660786bb204989f39f29de0c3e7, type: 3}
   attackSound: {fileID: 8300000, guid: 65a50369ce943024882159717c1eae1e, type: 3}
   footstepSound: {fileID: 8300000, guid: 48f80aea8e9e41e49a3c2cba586e0679, type: 3}
   gibSound: {fileID: 8300000, guid: a5fc10dc12022e444b74533b029ae6d4, type: 3}
   stepRate: 0.4
-  attackRange: 2
-  attackDamage: 20
-  attackCooldown: 5
-  gibAfter: 3
   bloodParticles: {fileID: 7764719977971013181}
   gibParticles: {fileID: 752586529847773597}
-  enemyMesh: {fileID: 2148499418306895522}
+  mesh: {fileID: 0}
   icon: {fileID: 8839956520512000705}
+  gibAmount: 5
+  gibSize: 1
+  IsRanged: 0
+  IsBoss: 0
+  healthBar: {fileID: 0}
 --- !u!114 &2785060142436803582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9818,7 +9835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d33ed4c496306aa419a4b8124fb4abee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AnimatorRef: {fileID: 4830144137772519535}
+  animatorRef: {fileID: 4830144137772519535}
   animationTransitionDuration: 0.2
   animationDampTime: 0.1
 --- !u!114 &8235345166285682992
@@ -9902,7 +9919,7 @@ AudioSource:
   m_GameObject: {fileID: 2915940786349723046}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 1cc00bff486077a49b84ac7d3f6161e4, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

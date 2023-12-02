@@ -6765,8 +6765,10 @@ MonoBehaviour:
   isDead: 0
   isGrounded: 0
   isSprinting: 0
+  isWalking: 0
   isAiming: 0
   isRagdoll: 0
+  isDriving: 0
   canJump: 1
   canShoot: 1
   canAttack: 1
@@ -6784,11 +6786,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpKey: 32
   sprintKey: 304
+  walkKey: 306
   attackKey: 113
   shootKey: 323
   aimKey: 324
   enterVehicleKey: 102
   brakeKey: 32
+  mapKey: 109
+  worldMap: {fileID: 0}
 --- !u!114 &8256951032834576687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6803,6 +6808,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 7
   sprintSpeed: 10
+  walkSpeed: 5
   groundDrag: 8
   orientation: {fileID: 157256143571823657}
   rootBone: {fileID: 4208322166915201025}
@@ -6823,7 +6829,7 @@ MonoBehaviour:
   landSound: {fileID: 8300000, guid: 17411bec87fb501498a425ec48de023c, type: 3}
   stepRate: 0.4
   sprintStepRate: 0.3
-  vehicle: {fileID: 0}
+  radioStreamer: {fileID: 0}
 --- !u!114 &761718741727286435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6861,9 +6867,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackCollider: {fileID: 7814156360800629607}
   pushForce: 2
+  pushForceVehicle: 1000
   pushForceUp: 1
   cooldown: 1
   shootingCooldown: 1.5
+  kickDamage: 10
+  shootDamage: 30
   attackSounds:
   - {fileID: 8300000, guid: 5d563c847d097f740b4cabbac73e13b6, type: 3}
   - {fileID: 8300000, guid: e4a85fdd4f851c54ba1474698da4c008, type: 3}
@@ -6877,12 +6886,18 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  rangedEnemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   objectLayer:
     serializedVersion: 2
     m_Bits: 1024
+  vehicleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   weaponObject: {fileID: 3695489237369813646}
   bulletHolePrefab: {fileID: 7118867027846255714, guid: bf7a2c93271868c44aac70e1bb3b99ab, type: 3}
   bulletParticles: {fileID: 3891858094462751694, guid: 3a2acc9ad9a892843ac18366287b8f29, type: 3}
@@ -6903,7 +6918,8 @@ MonoBehaviour:
   damageSound: {fileID: 8300000, guid: ba2fa7eed4bc888498cf0b1b9a52d25d, type: 3}
   deathSound: {fileID: 8300000, guid: b0a4f7923f9f1ca40836d9bf1799f254, type: 3}
   bloodParticles: {fileID: 4350021878359341350}
-  healthText: {fileID: 0}
+  healthBar: {fileID: 0}
+  gameOverText: {fileID: 0}
 --- !u!114 &8322481457636172551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6972,7 +6988,7 @@ AudioSource:
   m_GameObject: {fileID: 3718944673796615469}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 1cc00bff486077a49b84ac7d3f6161e4, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.5

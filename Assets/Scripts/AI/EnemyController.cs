@@ -202,6 +202,7 @@ namespace GTASP.AI
             IsGibbed = true;
             HideMesh();
             gibParticles.Play();
+            GetComponent<Collider>().enabled = false;
             spawnGibs.SpawnMultipleGibs(transform.position, gibAmount, gibSize);
             audioSource.PlayOneShot(gibSound);
             Destroy(gameObject, 5f);
